@@ -1,9 +1,11 @@
 package com.orukunnn.shapesnapapp.ui.common
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,14 +16,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.woowla.compose.icon.collections.tabler.Tabler
+import com.woowla.compose.icon.collections.tabler.tabler.Filled
+import com.woowla.compose.icon.collections.tabler.tabler.Outline
+import com.woowla.compose.icon.collections.tabler.tabler.filled.User
+import com.woowla.compose.icon.collections.tabler.tabler.outline.User
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
-import shapesnapv3.composeapp.generated.resources.appbar_free_user
-import shapesnapv3.composeapp.generated.resources.appbar_login_arrow
+import shapesnapv3.composeapp.generated.resources.home_title
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ShapeSnapHomeAppBar(
     title: String,
@@ -34,24 +41,14 @@ fun ShapeSnapHomeAppBar(
 ) {
     TopAppBar(
         title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(Modifier.width(12.dp))
-                Text(
-                    text = stringResource(Res.string.appbar_free_user),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    text = stringResource(Res.string.appbar_login_arrow),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         },
@@ -62,9 +59,15 @@ fun ShapeSnapHomeAppBar(
         },
         actions = {
             if (isLoggedIn) {
-                LogOutIconButton(onLogoutClick = onLogoutClick)
+                IconButton(
+                    imageVector = Tabler.Filled.User,
+                    onClick = onLogoutClick,
+                )
             } else {
-                LogInIconButton(onLoginClick = onLoginClick)
+                IconButton(
+                    imageVector = Tabler.Outline.User,
+                    onClick = onLoginClick,
+                )
             }
         },
         colors =
@@ -78,26 +81,23 @@ fun ShapeSnapHomeAppBar(
 }
 
 @Composable
-fun LogInIconButton(
-    onLoginClick: () -> Unit,
+fun IconButton(
+    imageVector: ImageVector,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    IconButton(onClick = onLoginClick, modifier = modifier) {
-        Text("👤", style = MaterialTheme.typography.titleMedium)
-    }
-}
-
-@Composable
-fun LogOutIconButton(
-    onLogoutClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(onClick = onLogoutClick, modifier = modifier) {
-        Text(
-            text = "⏻",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF005D53),
-        )
+    IconButton(onClick = onClick, modifier = modifier) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier
+        ) {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = null,
+                tint = Color(0xFF005D53),
+            )
+        }
     }
 }
 
@@ -127,26 +127,27 @@ fun ShapeSnapAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview
 @Composable
-fun ShapeSnapAppBarDrawer(
-    title: String,
-    onMenuClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-) {
-    TopAppBar(
-        title = { Text(text = title, style = MaterialTheme.typography.titleLarge) },
-        navigationIcon = {
-            IconButton(onClick = onMenuClick) {
-                Text("☰", style = MaterialTheme.typography.titleLarge)
-            }
-        },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-            ),
-        scrollBehavior = scrollBehavior,
-        modifier = modifier,
+private fun ShapeSnapHomeAppBarWithLogoutPreview() {
+    ShapeSnapHomeAppBar(
+        title = stringResource(Res.string.home_title),
+        isLoggedIn = true,
+        onMenuClick = {},
+        onLoginClick = {},
+        onLogoutClick = {},
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun ShapeSnapHomeAppBarWithLoginPreview() {
+    ShapeSnapHomeAppBar(
+        title = stringResource(Res.string.home_title),
+        isLoggedIn = false,
+        onMenuClick = {},
+        onLoginClick = {},
+        onLogoutClick = {},
     )
 }
