@@ -23,10 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.orukunnn.shapesnapapp.core.util.DateFormat
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
+import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.home_posted_prefix
@@ -123,4 +125,15 @@ internal fun PresetItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PresetItemPreview() {
+    PresetItem(
+        preset = PresetsFactory.createPreset(),
+        currentUid = "",
+        onToggleLike = {},
+        onSave = {},
+    )
 }
