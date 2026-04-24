@@ -1,6 +1,6 @@
 package com.orukunnn.shapesnapapp.data.model.preset
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 data class Preset(
     val id: String = "",

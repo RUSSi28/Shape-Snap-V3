@@ -1,7 +1,8 @@
 package com.orukunnn.shapesnapapp.data.model.preset
 
-import kotlinx.datetime.Instant
+
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 @Serializable
 data class PresetEntity(
