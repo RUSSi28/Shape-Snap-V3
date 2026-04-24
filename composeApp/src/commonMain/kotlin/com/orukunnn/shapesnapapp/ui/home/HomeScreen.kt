@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -30,21 +30,23 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.orukunnn.shapesnapapp.core.util.DateFormat
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
+import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
 import com.orukunnn.shapesnapapp.ui.common.LimitReachedDialog
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapHomeAppBar
 import kotlinx.collections.immutable.ImmutableList
@@ -81,11 +83,13 @@ fun HomeScreen(
                 CircularProgressIndicator()
             }
         }
+
         is HomeUiState.Error -> {
             Column(Modifier.fillMaxSize().padding(16.dp)) {
                 Text(state.message, color = MaterialTheme.colorScheme.error)
             }
         }
+
         is HomeUiState.Success -> {
             HomeSuccessScreen(
                 title = stringResource(Res.string.home_title),
@@ -249,67 +253,97 @@ private fun PresetCard(
         shape = RoundedCornerShape(32.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        Column {
-            val url = preset.imageUrl ?: preset.previewImageUrl
-            if (!url.isNullOrBlank()) {
-                AsyncImage(
-                    model = url,
-                    contentDescription = preset.displayName,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(180.dp),
-                    contentScale = ContentScale.Crop,
+        val url = preset.imageUrl ?: preset.previewImageUrl
+        if (!url.isNullOrBlank()) {
+            AsyncImage(
+                model = url,
+                contentDescription = preset.displayName,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+            ) {
+                ColorPainter(Color.Gray)
+            }
+        }
+        Text(preset.displayName, style = MaterialTheme.typography.titleMedium)
+        preset.description?.let {
+            Text(it, style = MaterialTheme.typography.bodyMedium)
+        }
+        Text(
+            stringResource(Res.string.home_posted_prefix) + DateFormat.convertShapeSnapDateFormat(
+                preset.createdAt
+            ),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TextButton(onClick = onToggleLike) {
+                Text(
+                    stringResource(Res.string.preset_like),
+                    color = if (liked) Color(0xFFE91E63) else MaterialTheme.colorScheme.primary,
                 )
             }
-            Text(preset.displayName, style = MaterialTheme.typography.titleMedium)
-            preset.description?.let {
-                Text(it, style = MaterialTheme.typography.bodyMedium)
+            TextButton(onClick = onSave) {
+                Text(
+                    stringResource(Res.string.preset_saved),
+                    color = if (saved) Color(0xFF005D53) else MaterialTheme.colorScheme.primary,
+                )
             }
-            Text(
-                stringResource(Res.string.home_posted_prefix) + DateFormat.convertShapeSnapDateFormat(preset.createdAt),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TextButton(onClick = onToggleLike) {
-                    Text(
-                        stringResource(Res.string.preset_like),
-                        color = if (liked) Color(0xFFE91E63) else MaterialTheme.colorScheme.primary,
-                    )
+            Box {
+                TextButton(onClick = { menuOpen = true }) {
+                    Text(stringResource(Res.string.preset_menu))
                 }
-                TextButton(onClick = onSave) {
-                    Text(
-                        stringResource(Res.string.preset_saved),
-                        color = if (saved) Color(0xFF005D53) else MaterialTheme.colorScheme.primary,
+                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(Res.string.preset_like)) },
+                        onClick = {
+                            menuOpen = false
+                            onToggleLike()
+                        },
                     )
-                }
-                Box {
-                    TextButton(onClick = { menuOpen = true }) {
-                        Text(stringResource(Res.string.preset_menu))
-                    }
-                    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(Res.string.preset_like)) },
-                            onClick = {
-                                menuOpen = false
-                                onToggleLike()
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(Res.string.preset_saved)) },
-                            onClick = {
-                                menuOpen = false
-                                onSave()
-                            },
-                        )
-                    }
+                    DropdownMenuItem(
+                        text = { Text(stringResource(Res.string.preset_saved)) },
+                        onClick = {
+                            menuOpen = false
+                            onSave()
+                        },
+                    )
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    HomeSuccessScreen(
+        title = stringResource(Res.string.home_title),
+        presets = PresetsFactory.sample(),
+        hasMore = true,
+        isLoadingMore = false,
+        isRefreshing = false,
+        currentUid = null,
+        isLoggedIn = false,
+        onMenuClick = {},
+        onLogoutClick = {},
+        onLoginClick = {},
+        onLoadMore = {},
+        onRefresh = {},
+        onToggleLike = {},
+        onSave = {},
+    )
 }
