@@ -5,7 +5,7 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.Instant
 
 object PresetsFactory {
-    fun sample(): ImmutableList<Preset> =
+    fun createPresets(): ImmutableList<Preset> =
         listOf(
             Preset(
                 id = "sample_circle",
@@ -20,4 +20,11 @@ object PresetsFactory {
                 createdAt = Instant.fromEpochSeconds(1_700_000_100, 0),
             ),
         ).toPersistentList()
+
+    fun createPreset(): Preset = Preset(
+        id = "sample_square",
+        displayName = "Square",
+        description = "サンプルプリセット",
+        createdAt = Instant.fromEpochSeconds(1_700_000_100, 0),
+    )
 }
