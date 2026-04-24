@@ -2,7 +2,7 @@ package com.orukunnn.shapesnapapp.data.model.preset
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 object PresetsFactory {
     fun createPresets(): ImmutableList<Preset> =
