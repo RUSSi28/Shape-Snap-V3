@@ -1,0 +1,13 @@
+# GitLive Firebase (Kotlin) は iOS 側で公式 Firebase iOS SDK をリンクする必要があります。
+# 初回: cd iosApp && pod install
+# 以降は ShapeSnapV3.xcworkspace を Xcode で開いてください。
+
+platform :ios, '16.0'
+use_frameworks! :linkage => :static
+
+target 'iosApp' do
+  pod 'FirebaseCore'
+  pod 'FirebaseAuth'
+  pod 'FirebaseFirestore'
+  pod 'GoogleSignIn', '~> 8.0'
+end

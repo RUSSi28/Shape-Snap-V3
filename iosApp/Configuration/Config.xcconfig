@@ -1,0 +1,9 @@
+TEAM_ID=
+
+PRODUCT_NAME=ShapeSnapV3
+// Firebase に登録済みの Bundle ID と一致させる。
+// 複数 Team で同時ビルドする場合に限り ".$(TEAM_ID)" を末尾に付ける運用に戻すこと。
+PRODUCT_BUNDLE_IDENTIFIER=com.orukunnn.shapesnapapp
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
