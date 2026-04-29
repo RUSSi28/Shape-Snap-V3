@@ -22,7 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import shapesnapv3.composeapp.generated.resources.Res
@@ -36,13 +39,26 @@ fun StorageScreen(
     onRequestToPopBackStack: () -> Unit,
     viewModel: StorageScreenViewModel = koinViewModel(),
 ) {
-    val ids by viewModel.savedPresetIds.collectAsState()
+    val presetIds by viewModel.savedPresetIds.collectAsStateWithLifecycle()
+    StorageScreen(
+        presetIds = presetIds.toPersistentList(),
+        onBackButtonClick = onRequestToPopBackStack,
+        onRemoveButtonClick = viewModel::removePreset,
+    )
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StorageScreen(
+    presetIds: ImmutableList<String>,
+    onBackButtonClick: () -> Unit,
+    onRemoveButtonClick: (String) -> Unit,
+) {
     Scaffold(
         topBar = {
             ShapeSnapAppBar(
                 title = stringResource(Res.string.storage_saved_title),
-                onArrowBackIconClick = onRequestToPopBackStack,
+                onArrowBackIconClick = onBackButtonClick,
             )
         },
     ) { padding ->
@@ -61,7 +77,7 @@ fun StorageScreen(
                     modifier = Modifier.padding(12.dp)
                 )
             }
-            if (ids.isEmpty()) {
+            if (presetIds.isEmpty()) {
                 Text(
                     stringResource(Res.string.storage_empty),
                     modifier = Modifier.padding(top = 16.dp),
@@ -71,7 +87,7 @@ fun StorageScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(top = 12.dp),
                 ) {
-                    items(ids, key = { it }) { id ->
+                    items(presetIds, key = { it }) { id ->
                         Card(Modifier.fillMaxWidth()) {
                             Row(
                                 Modifier.padding(12.dp),
@@ -79,7 +95,7 @@ fun StorageScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(id, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-                                Button(onClick = { viewModel.removePreset(id) }) {
+                                Button(onClick = { onRemoveButtonClick(id) }) {
                                     Text(stringResource(Res.string.storage_remove))
                                 }
                             }
@@ -94,5 +110,9 @@ fun StorageScreen(
 @Preview
 @Composable
 private fun StorageScreenPreview() {
-    StorageScreen(onRequestToPopBackStack = {})
+    StorageScreen(
+        presetIds = listOf("id1", "id2", "id3").toPersistentList(),
+        onBackButtonClick = {},
+        onRemoveButtonClick = {},
+    )
 }
