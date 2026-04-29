@@ -17,6 +17,7 @@ class AuthDatasourceImpl : AuthDatasource {
                 UserProfile(
                     uid = it.uid,
                     displayName = it.displayName,
+                    email = it.email,
                     photoUrl = it.photoURL,
                 )
             }

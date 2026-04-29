@@ -1,6 +1,5 @@
 package com.orukunnn.shapesnapapp.app
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,24 +15,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.orukunnn.shapesnapapp.ui.common.AdBannerView
 import com.orukunnn.shapesnapapp.ui.common.LogOutConfirmDialog
-import com.orukunnn.shapesnapapp.ui.common.NavigationBottomSheet
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapBottomBar
 import com.orukunnn.shapesnapapp.ui.main.MainScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainScreen() {
-    val mainVm = koinViewModel<MainScreenViewModel>()
+    val mainViewModel = koinViewModel<MainScreenViewModel>()
+    val user by mainViewModel.sheetUserProfile.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     var showSheet by remember { mutableStateOf(false) }
-    val showLogout by mainVm.showLogoutConfirmDialog.collectAsState()
-    val sheetUser by mainVm.sheetUserProfile.collectAsState()
+    val showLogout by mainViewModel.showLogoutConfirmDialog.collectAsState()
+    val sheetUser by mainViewModel.sheetUserProfile.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -45,10 +45,11 @@ fun MainScreen() {
                 .padding(padding),
         ) {
             AppNavHost(
+                address = user?.email.orEmpty(),
                 navController = navController,
                 modifier = Modifier.fillMaxSize(),
                 onMenuClick = { showSheet = true },
-                onLogoutClick = { mainVm.requestLogoutConfirmation() },
+                onLogoutClick = { mainViewModel.requestLogoutConfirmation() },
             )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,26 +78,26 @@ fun MainScreen() {
         }
     }
 
-    NavigationBottomSheet(
-        visible = showSheet,
-        onDismiss = { showSheet = false },
-        currentUser = sheetUser,
-        onNavigateHome = {
-            navController.navigate(HomeDestination) { launchSingleTop = true }
-        },
-        onNavigatePosts = {
-            navController.navigate(PostsDestination) { launchSingleTop = true }
-        },
-        onNavigateStorage = {
-            navController.navigate(StorageDestination) { launchSingleTop = true }
-        },
-        onSignOut = { mainVm.requestLogoutConfirmation() },
-    )
+//    NavigationBottomSheet(
+//        visible = showSheet,
+//        onDismiss = { showSheet = false },
+//        currentUser = sheetUser,
+//        onNavigateHome = {
+//            navController.navigate(HomeDestination) { launchSingleTop = true }
+//        },
+//        onNavigatePosts = {
+//            navController.navigate(PostsDestination) { launchSingleTop = true }
+//        },
+//        onNavigateStorage = {
+//            navController.navigate(StorageDestination) { launchSingleTop = true }
+//        },
+//        onSignOut = { mainVm.requestLogoutConfirmation() },
+//    )
 
     if (showLogout) {
         LogOutConfirmDialog(
-            onLogOutConfirm = { mainVm.confirmLogout() },
-            onDismiss = { mainVm.dismissLogoutConfirmation() },
+            onLogOutConfirm = { mainViewModel.confirmLogout() },
+            onDismiss = { mainViewModel.dismissLogoutConfirmation() },
         )
     }
 }

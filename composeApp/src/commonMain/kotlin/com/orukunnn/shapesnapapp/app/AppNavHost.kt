@@ -11,6 +11,7 @@ import com.orukunnn.shapesnapapp.ui.storage.StorageScreen
 
 @Composable
 fun AppNavHost(
+    address: String,
     navController: NavHostController,
     modifier: Modifier = Modifier,
     onMenuClick: () -> Unit,
@@ -37,7 +38,11 @@ fun AppNavHost(
             SearchScreen()
         }
         composable<ProfileDestination> {
-            ProfileScreen()
+            ProfileScreen(
+                address = address,
+                onRequestToPopBackStack = { navController.popBackStack() },
+                onRequestToLogOut = onLogoutClick,
+            )
         }
     }
 }
