@@ -34,6 +34,9 @@ fun MainScreen() {
     var showSheet by remember { mutableStateOf(false) }
     val showLogout by mainViewModel.showLogoutConfirmDialog.collectAsState()
     val sheetUser by mainViewModel.sheetUserProfile.collectAsState()
+    val isBottomBarVisible = currentRoute?.let { route ->
+        bottomNavRouteNames.any(route::contains)
+    } == true
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -51,29 +54,31 @@ fun MainScreen() {
                 onMenuClick = { showSheet = true },
                 onLogoutClick = { mainViewModel.requestLogoutConfirmation() },
             )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
-            ) {
-                ShapeSnapBottomBar(
-                    currentRoute = currentRoute,
-                    onNavigateSearch = {
-                        navController.navigate(SearchDestination) { launchSingleTop = true }
-                    },
-                    onNavigatePost = {
-                        navController.navigate(PostsDestination) { launchSingleTop = true }
-                    },
-                    onNavigateHome = {
-                        navController.navigate(HomeDestination) { launchSingleTop = true }
-                    },
-                    onNavigateStorage = {
-                        navController.navigate(StorageDestination) { launchSingleTop = true }
-                    },
-                    onNavigateProfile = {
-                        navController.navigate(ProfileDestination) { launchSingleTop = true }
-                    },
-                )
-                AdBannerView(Modifier.padding(bottom = 8.dp))
+            if (isBottomBarVisible) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                ) {
+                    ShapeSnapBottomBar(
+                        currentRoute = currentRoute,
+                        onNavigateSearch = {
+                            navController.navigate(SearchDestination) { launchSingleTop = true }
+                        },
+                        onNavigatePost = {
+                            navController.navigate(PostsDestination) { launchSingleTop = true }
+                        },
+                        onNavigateHome = {
+                            navController.navigate(HomeDestination) { launchSingleTop = true }
+                        },
+                        onNavigateStorage = {
+                            navController.navigate(StorageDestination) { launchSingleTop = true }
+                        },
+                        onNavigateProfile = {
+                            navController.navigate(ProfileDestination) { launchSingleTop = true }
+                        },
+                    )
+                    AdBannerView(Modifier.padding(bottom = 8.dp))
+                }
             }
         }
     }

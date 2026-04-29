@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ fun ProfileScreen(
     address: String,
     onRequestToPopBackStack: () -> Unit,
     onRequestToLogOut: () -> Unit,
+    onRequestToNavigateToTermsOfService: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -58,7 +60,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = Color.Gray,
+                            color = Color.LightGray,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 20.dp, vertical = 8.dp)
@@ -68,6 +70,7 @@ fun ProfileScreen(
                     Text(text = address)
                 }
             }
+            HorizontalDivider()
             Text(
                 text = "ログアウト",
                 fontSize = 18.sp,
@@ -76,6 +79,16 @@ fun ProfileScreen(
                     .clickable{ onRequestToLogOut() }
                     .padding(8.dp)
             )
+            HorizontalDivider()
+            Text(
+                text = "利用規約",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable{ onRequestToNavigateToTermsOfService() }
+                    .padding(8.dp)
+            )
+            HorizontalDivider()
         }
     }
 }
@@ -87,5 +100,6 @@ private fun ProfileScreenPreview() {
         address = "address@gmail.com",
         onRequestToPopBackStack = {},
         onRequestToLogOut = {},
+        onRequestToNavigateToTermsOfService = {}
     )
 }

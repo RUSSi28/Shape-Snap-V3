@@ -44,6 +44,12 @@ fun AppNavHost(
                 address = address,
                 onRequestToPopBackStack = { navController.popBackStack() },
                 onRequestToLogOut = onLogoutClick,
+                onRequestToNavigateToTermsOfService = { navController.navigate(TermsOfServiceDestination) }
+            )
+        }
+        composable<TermsOfServiceDestination> {
+            TermsOfServiceScreen(
+                onRequestToPopBackStack = { navController.popBackStack() }
             )
         }
     }
