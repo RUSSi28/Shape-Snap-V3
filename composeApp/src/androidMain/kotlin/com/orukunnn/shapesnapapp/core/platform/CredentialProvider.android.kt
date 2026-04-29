@@ -16,6 +16,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 class AndroidCredentialProvider(
@@ -41,19 +42,20 @@ class AndroidCredentialProvider(
                         .build()
                 val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
                 val response =
-                    suspendCoroutine { cont ->
+                    suspendCancellableCoroutine { continuation ->
                         credentialManager.getCredentialAsync(
                             applicationContext,
                             request,
                             CancellationSignal(),
                             executor,
-                            object : CredentialManagerCallback<GetCredentialResponse, GetCredentialException> {
+                            object :
+                                CredentialManagerCallback<GetCredentialResponse, GetCredentialException> {
                                 override fun onResult(result: GetCredentialResponse) {
-                                    cont.resume(result)
+                                    continuation.resume(result)
                                 }
 
                                 override fun onError(e: GetCredentialException) {
-                                    cont.resumeWithException(e)
+                                    continuation.resumeWithException(e)
                                 }
                             },
                         )
