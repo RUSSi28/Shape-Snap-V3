@@ -21,6 +21,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import com.orukunnn.shapesnapapp.app.HomeDestination
+import com.orukunnn.shapesnapapp.app.PostsDestination
+import com.orukunnn.shapesnapapp.app.ProfileDestination
+import com.orukunnn.shapesnapapp.app.SearchDestination
+import com.orukunnn.shapesnapapp.app.StorageDestination
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Filled
 import com.woowla.compose.icon.collections.tabler.tabler.Outline
@@ -44,7 +52,7 @@ import shapesnapv3.composeapp.generated.resources.bottom_storage
 
 @Composable
 fun ShapeSnapBottomBar(
-    currentRoute: String?,
+    currentDestination: NavDestination?,
     onNavigateSearch: () -> Unit,
     onNavigatePost: () -> Unit,
     onNavigateHome: () -> Unit,
@@ -71,31 +79,41 @@ fun ShapeSnapBottomBar(
         ) {
             BottomBarItem(
                 label = stringResource(Res.string.bottom_search),
-                selected = currentRoute?.contains("SearchDestination") == true,
+                selected =
+                    currentDestination?.hierarchy?.any { it.hasRoute(SearchDestination::class) } ==
+                        true,
                 icon = Tabler.Outline.Search,
                 onClick = onNavigateSearch,
             )
             BottomBarItem(
                 label = stringResource(Res.string.bottom_post),
-                selected = currentRoute?.contains("PostsDestination") == true,
+                selected =
+                    currentDestination?.hierarchy?.any { it.hasRoute(PostsDestination::class) } ==
+                        true,
                 icon = Tabler.Filled.FileUpload,
                 onClick = onNavigatePost,
             )
             BottomBarItem(
                 label = stringResource(Res.string.bottom_home),
-                selected = currentRoute?.contains("HomeDestination") == true,
+                selected =
+                    currentDestination?.hierarchy?.any { it.hasRoute(HomeDestination::class) } ==
+                        true,
                 icon = Tabler.Filled.Home,
                 onClick = onNavigateHome,
             )
             BottomBarItem(
                 label = stringResource(Res.string.bottom_storage),
-                selected = currentRoute?.contains("StorageDestination") == true,
+                selected =
+                    currentDestination?.hierarchy?.any { it.hasRoute(StorageDestination::class) } ==
+                        true,
                 icon = Tabler.Filled.Files,
                 onClick = onNavigateStorage,
             )
             BottomBarItem(
                 label = stringResource(Res.string.bottom_profile),
-                selected = currentRoute?.contains("ProfileDestination") == true,
+                selected =
+                    currentDestination?.hierarchy?.any { it.hasRoute(ProfileDestination::class) } ==
+                        true,
                 icon = Tabler.Filled.CircleLetterA,
                 onClick = onNavigateProfile,
             )
@@ -141,7 +159,7 @@ private fun BottomBarItem(
 private fun ShapeSnapBottomBarPreview() {
     MaterialTheme{
         ShapeSnapBottomBar(
-            currentRoute = "HomeDestination",
+            currentDestination = null,
             onNavigateSearch = {},
             onNavigatePost = {},
             onNavigateHome = {},

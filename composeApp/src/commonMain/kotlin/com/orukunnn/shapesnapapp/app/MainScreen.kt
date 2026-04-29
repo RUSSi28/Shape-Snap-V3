@@ -3,8 +3,12 @@ package com.orukunnn.shapesnapapp.app
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,8 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.orukunnn.shapesnapapp.ui.common.AdBannerView
@@ -23,6 +29,7 @@ import com.orukunnn.shapesnapapp.ui.common.LogOutConfirmDialog
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapBottomBar
 import com.orukunnn.shapesnapapp.ui.main.MainScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.reflect.KClass
 
 @Composable
 fun MainScreen() {
@@ -30,13 +37,18 @@ fun MainScreen() {
     val user by mainViewModel.sheetUserProfile.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentDestination = navBackStackEntry?.destination
     var showSheet by remember { mutableStateOf(false) }
     val showLogout by mainViewModel.showLogoutConfirmDialog.collectAsState()
     val sheetUser by mainViewModel.sheetUserProfile.collectAsState()
-    val isBottomBarVisible = currentRoute?.let { route ->
-        bottomNavRouteNames.any(route::contains)
-    } == true
+    val isBottomBarVisible =
+        currentDestination?.hierarchy?.any { dest ->
+            dest.hasRoute(HomeDestination::class) ||
+                    dest.hasRoute(SearchDestination::class) ||
+                    dest.hasRoute(PostsDestination::class) ||
+                    dest.hasRoute(StorageDestination::class) ||
+                    dest.hasRoute(ProfileDestination::class)
+        } == true
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -57,47 +69,50 @@ fun MainScreen() {
             if (isBottomBarVisible) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .windowInsetsPadding(
+                                WindowInsets.navigationBars.only(WindowInsetsSides.Bottom),
+                            )
                 ) {
                     ShapeSnapBottomBar(
-                        currentRoute = currentRoute,
+                        currentDestination = currentDestination,
                         onNavigateSearch = {
-                            navController.navigate(SearchDestination) { launchSingleTop = true }
+                            if (!currentDestination.isOnRoute(SearchDestination::class)) {
+                                navController.navigate(SearchDestination) { launchSingleTop = true }
+                            }
                         },
                         onNavigatePost = {
-                            navController.navigate(PostsDestination) { launchSingleTop = true }
+                            if (!currentDestination.isOnRoute(PostsDestination::class)) {
+                                navController.navigate(PostsDestination) { launchSingleTop = true }
+                            }
                         },
                         onNavigateHome = {
-                            navController.navigate(HomeDestination) { launchSingleTop = true }
+                            if (!currentDestination.isOnRoute(HomeDestination::class)) {
+                                navController.navigate(HomeDestination) { launchSingleTop = true }
+                            }
                         },
                         onNavigateStorage = {
-                            navController.navigate(StorageDestination) { launchSingleTop = true }
+                            if (!currentDestination.isOnRoute(StorageDestination::class)) {
+                                navController.navigate(StorageDestination) {
+                                    launchSingleTop = true
+                                }
+                            }
                         },
                         onNavigateProfile = {
-                            navController.navigate(ProfileDestination) { launchSingleTop = true }
+                            if (!currentDestination.isOnRoute(ProfileDestination::class)) {
+                                navController.navigate(ProfileDestination) {
+                                    launchSingleTop = true
+                                }
+                            }
                         },
                     )
-                    AdBannerView(Modifier.padding(bottom = 8.dp))
+                    AdBannerView()
                 }
             }
         }
     }
-
-//    NavigationBottomSheet(
-//        visible = showSheet,
-//        onDismiss = { showSheet = false },
-//        currentUser = sheetUser,
-//        onNavigateHome = {
-//            navController.navigate(HomeDestination) { launchSingleTop = true }
-//        },
-//        onNavigatePosts = {
-//            navController.navigate(PostsDestination) { launchSingleTop = true }
-//        },
-//        onNavigateStorage = {
-//            navController.navigate(StorageDestination) { launchSingleTop = true }
-//        },
-//        onSignOut = { mainVm.requestLogoutConfirmation() },
-//    )
 
     if (showLogout) {
         LogOutConfirmDialog(
@@ -106,3 +121,6 @@ fun MainScreen() {
         )
     }
 }
+
+private fun NavDestination?.isOnRoute(route: KClass<*>): Boolean =
+    this?.hierarchy?.any { it.hasRoute(route) } == true
