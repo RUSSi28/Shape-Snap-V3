@@ -52,24 +52,24 @@ fun ShapeSnapHomeAppBar(
                 )
             }
         },
-        navigationIcon = {
-            IconButton(onClick = onMenuClick) {
-                Text("☰", style = MaterialTheme.typography.titleLarge)
-            }
-        },
-        actions = {
-            if (isLoggedIn) {
-                IconButton(
-                    imageVector = Tabler.Filled.User,
-                    onClick = onLogoutClick,
-                )
-            } else {
-                IconButton(
-                    imageVector = Tabler.Outline.User,
-                    onClick = onLoginClick,
-                )
-            }
-        },
+//        navigationIcon = {
+//            IconButton(onClick = onMenuClick) {
+//                Text("☰", style = MaterialTheme.typography.titleLarge)
+//            }
+//        },
+//        actions = {
+//            if (isLoggedIn) {
+//                IconButton(
+//                    imageVector = Tabler.Filled.User,
+//                    onClick = onLogoutClick,
+//                )
+//            } else {
+//                IconButton(
+//                    imageVector = Tabler.Outline.User,
+//                    onClick = onLoginClick,
+//                )
+//            }
+//        },
         colors =
             TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surface,

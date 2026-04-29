@@ -32,10 +32,12 @@ fun AppNavHost(
             PostsScreen(onBack = { navController.popBackStack() })
         }
         composable<StorageDestination> {
-            StorageScreen(onBack = { navController.popBackStack() })
+            StorageScreen(onRequestToPopBackStack = { navController.popBackStack() })
         }
         composable<SearchDestination> {
-            SearchScreen()
+            SearchScreen(
+                onRequestToPopBackStack = { navController.popBackStack() }
+            )
         }
         composable<ProfileDestination> {
             ProfileScreen(

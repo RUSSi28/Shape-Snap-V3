@@ -19,7 +19,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -31,7 +33,7 @@ import shapesnapv3.composeapp.generated.resources.storage_saved_title
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StorageScreen(
-    onBack: () -> Unit,
+    onRequestToPopBackStack: () -> Unit,
     viewModel: StorageScreenViewModel = koinViewModel(),
 ) {
     val ids by viewModel.savedPresetIds.collectAsState()
@@ -40,7 +42,7 @@ fun StorageScreen(
         topBar = {
             ShapeSnapAppBar(
                 title = stringResource(Res.string.storage_saved_title),
-                onArrowBackIconClick = onBack,
+                onArrowBackIconClick = onRequestToPopBackStack,
             )
         },
     ) { padding ->
@@ -50,10 +52,15 @@ fun StorageScreen(
                 .padding(padding)
                 .padding(16.dp),
         ) {
-            Text(
-                text = stringResource(Res.string.storage_saved_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
+            Card(
+                Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "アバターへの適用方法",
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(12.dp)
+                )
+            }
             if (ids.isEmpty()) {
                 Text(
                     stringResource(Res.string.storage_empty),
@@ -82,4 +89,10 @@ fun StorageScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun StorageScreenPreview() {
+    StorageScreen(onRequestToPopBackStack = {})
 }
