@@ -145,6 +145,7 @@ private fun HomeSuccessScreen(
                 onLoadMore = onLoadMore,
                 onToggleLike = onToggleLike,
                 onSave = onSave,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
     }
@@ -159,6 +160,7 @@ private fun HomeScreenContent(
     onLoadMore: () -> Unit,
     onToggleLike: (String) -> Unit,
     onSave: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val gridState = rememberLazyGridState()
     LaunchedEffect(gridState, hasMore) {
@@ -173,42 +175,37 @@ private fun HomeScreenContent(
             }
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = 8.dp),
-    ) {
-        if (presets.isEmpty()) {
-            Text(
-                stringResource(Res.string.home_empty),
-                modifier = Modifier.padding(16.dp),
-            )
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(340.dp),
-                state = gridState,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(top = 12.dp, bottom = 140.dp),
-            ) {
-                items(presets, key = { it.id }) { preset ->
-                    PresetItem(
-                        preset = preset,
-                        currentUid = currentUid,
-                        onToggleLike = { onToggleLike(preset.id) },
-                        onSave = { onSave(preset.id) },
-                    )
-                }
-                if (isLoadingMore) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
+    if (presets.isEmpty()) {
+        Text(
+            stringResource(Res.string.home_empty),
+            modifier = Modifier.padding(16.dp),
+        )
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(340.dp),
+            state = gridState,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(top = 12.dp),
+            modifier = modifier.fillMaxSize()
+        ) {
+            items(presets, key = { it.id }) { preset ->
+                PresetItem(
+                    preset = preset,
+                    currentUid = currentUid,
+                    onToggleLike = { onToggleLike(preset.id) },
+                    onSave = { onSave(preset.id) },
+                )
+            }
+            if (isLoadingMore) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
             }

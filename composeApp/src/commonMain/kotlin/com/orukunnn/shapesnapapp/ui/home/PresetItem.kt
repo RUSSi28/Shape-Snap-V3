@@ -1,18 +1,23 @@
 package com.orukunnn.shapesnapapp.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +34,16 @@ import coil3.compose.AsyncImage
 import com.orukunnn.shapesnapapp.core.util.DateFormat
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
+import com.woowla.compose.icon.collections.tabler.Tabler
+import com.woowla.compose.icon.collections.tabler.tabler.Filled
+import com.woowla.compose.icon.collections.tabler.tabler.Outline
+import com.woowla.compose.icon.collections.tabler.tabler.filled.FileDownload
+import com.woowla.compose.icon.collections.tabler.tabler.filled.Heart
+import com.woowla.compose.icon.collections.tabler.tabler.outline.Share
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.home_posted_prefix
 import shapesnapv3.composeapp.generated.resources.preset_like
-import shapesnapv3.composeapp.generated.resources.preset_menu
 import shapesnapv3.composeapp.generated.resources.preset_saved
 
 @Composable
@@ -53,6 +63,7 @@ internal fun PresetItem(
         shape = RoundedCornerShape(32.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
+
         val url = preset.imageUrl ?: preset.previewImageUrl
         if (!url.isNullOrBlank()) {
             AsyncImage(
@@ -74,54 +85,103 @@ internal fun PresetItem(
                 ColorPainter(Color.Gray)
             }
         }
-        Text(preset.displayName, style = MaterialTheme.typography.titleMedium)
-        preset.description?.let {
-            Text(it, style = MaterialTheme.typography.bodyMedium)
-        }
-        Text(
-            stringResource(Res.string.home_posted_prefix) + DateFormat.convertShapeSnapDateFormat(
-                preset.createdAt
-            ),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            modifier = Modifier.padding(
+                horizontal = 24.dp,
+                vertical = 8.dp
+            )
         ) {
-            TextButton(onClick = onToggleLike) {
-                Text(
-                    stringResource(Res.string.preset_like),
-                    color = if (liked) Color(0xFFE91E63) else MaterialTheme.colorScheme.primary,
-                )
-            }
-            TextButton(onClick = onSave) {
-                Text(
-                    stringResource(Res.string.preset_saved),
-                    color = if (saved) Color(0xFF005D53) else MaterialTheme.colorScheme.primary,
-                )
-            }
-            Box {
-                TextButton(onClick = { menuOpen = true }) {
-                    Text(stringResource(Res.string.preset_menu))
-                }
-                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(Res.string.preset_like)) },
-                        onClick = {
-                            menuOpen = false
-                            onToggleLike()
-                        },
+            Text(
+                text = preset.characterTagId,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.DarkGray,
+            )
+            Text(
+                stringResource(Res.string.home_posted_prefix) + DateFormat.convertShapeSnapDateFormat(
+                    preset.createdAt
+                ),
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.Gray,
+            )
+            Spacer(Modifier.size(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                OutlinedButton(
+                    enabled = !liked,
+                    onClick = onToggleLike,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Tabler.Filled.Heart,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                        tint = Color(0xFFEA6399)
                     )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(Res.string.preset_saved)) },
-                        onClick = {
-                            menuOpen = false
-                            onSave()
+                    Spacer(Modifier.size(8.dp))
+                    Text(
+                        if(liked){
+                            "すき済"
+                        }else{
+                            stringResource(Res.string.preset_like)
                         },
+                        color = Color(0xFFEA6399),
                     )
                 }
+                Spacer(Modifier.size(8.dp))
+                OutlinedButton(
+                    enabled = !saved,
+                    onClick = onSave,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Tabler.Filled.FileDownload,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                        tint = Color(0xFF5AADD4)
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    Text(
+                        text = if (saved) {
+                            stringResource(Res.string.preset_saved)
+                        } else {
+                            "保存"
+                        },
+                        color = Color(0xFF5AADD4),
+                    )
+                }
+                IconButton(onClick = { }) {
+                    Icon(
+                        imageVector = Tabler.Outline.Share,
+                        contentDescription = null,
+                        tint = Color.Gray,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+//            Box {
+//                TextButton(onClick = { menuOpen = true }) {
+//                    Text(stringResource(Res.string.preset_menu))
+//                }
+//                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+//                    DropdownMenuItem(
+//                        text = { Text(stringResource(Res.string.preset_like)) },
+//                        onClick = {
+//                            menuOpen = false
+//                            onToggleLike()
+//                        },
+//                    )
+//                    DropdownMenuItem(
+//                        text = { Text(stringResource(Res.string.preset_saved)) },
+//                        onClick = {
+//                            menuOpen = false
+//                            onSave()
+//                        },
+//                    )
+//                }
+//            }
             }
         }
     }

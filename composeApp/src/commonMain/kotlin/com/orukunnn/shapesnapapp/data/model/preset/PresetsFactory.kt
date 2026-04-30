@@ -9,13 +9,13 @@ object PresetsFactory {
         listOf(
             Preset(
                 id = "sample_circle",
-                displayName = "Circle",
+                characterTagId = "Circle",
                 description = "サンプルプリセット",
                 createdAt = Instant.fromEpochSeconds(1_700_000_000, 0),
             ),
             Preset(
                 id = "sample_square",
-                displayName = "Square",
+                characterTagId = "Square",
                 description = "サンプルプリセット",
                 createdAt = Instant.fromEpochSeconds(1_700_000_100, 0),
             ),
@@ -23,7 +23,7 @@ object PresetsFactory {
 
     fun createPreset(): Preset = Preset(
         id = "sample_square",
-        displayName = "Square",
+        characterTagId = "Square",
         description = "サンプルプリセット",
         createdAt = Instant.fromEpochSeconds(1_700_000_100, 0),
     )
