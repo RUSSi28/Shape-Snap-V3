@@ -35,8 +35,8 @@
     <string name="dialog_logout_confirm">ログアウト</string>
     <string name="dialog_logout_cancel">キャンセル</string>
     <string name="home_posted_prefix">Posted </string>
-    <string name="preset_like">すき</string>
-    <string name="preset_saved">保存済</string>
+    <string name="preset_like">Like</string>
+    <string name="preset_saved">Saved</string>
     <string name="preset_menu">⋯</string>
     <string name="sheet_storage_count">保存中: %1$d 件</string>
     <string name="search_title">Search</string>

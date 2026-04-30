@@ -1,6 +1,5 @@
 package com.orukunnn.shapesnapapp.ui.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.orukunnn.shapesnapapp.app.ShapeSnapButton
 import com.orukunnn.shapesnapapp.core.util.DateFormat
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
@@ -61,7 +60,7 @@ internal fun PresetItem(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(32.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
 
         val url = preset.imageUrl ?: preset.previewImageUrl
@@ -110,49 +109,39 @@ internal fun PresetItem(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                OutlinedButton(
+                ShapeSnapButton(
+                    imageVector = Tabler.Filled.Heart,
+                    text = if (liked){
+                        "liked"
+                    } else {
+                        stringResource(Res.string.preset_like)
+                    },
                     enabled = !liked,
+                    color = if (liked){
+                        Color(0xFFEA6399)
+                    } else {
+                        Color.Gray
+                    },
                     onClick = onToggleLike,
                     modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Tabler.Filled.Heart,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                        tint = Color(0xFFEA6399)
-                    )
-                    Spacer(Modifier.size(8.dp))
-                    Text(
-                        if(liked){
-                            "すき済"
-                        }else{
-                            stringResource(Res.string.preset_like)
-                        },
-                        color = Color(0xFFEA6399),
-                    )
-                }
+                )
                 Spacer(Modifier.size(8.dp))
-                OutlinedButton(
+                ShapeSnapButton(
+                    imageVector = Tabler.Filled.FileDownload,
+                    text = if (saved) {
+                        stringResource(Res.string.preset_saved)
+                    } else {
+                        "Save"
+                    },
                     enabled = !saved,
+                    color = if (saved) {
+                        Color(0xFF5AADD4)
+                    } else {
+                        Color.Gray
+                    },
                     onClick = onSave,
                     modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Tabler.Filled.FileDownload,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                        tint = Color(0xFF5AADD4)
-                    )
-                    Spacer(Modifier.size(8.dp))
-                    Text(
-                        text = if (saved) {
-                            stringResource(Res.string.preset_saved)
-                        } else {
-                            "保存"
-                        },
-                        color = Color(0xFF5AADD4),
-                    )
-                }
+                )
                 IconButton(onClick = { }) {
                     Icon(
                         imageVector = Tabler.Outline.Share,
@@ -161,27 +150,6 @@ internal fun PresetItem(
                         modifier = Modifier.size(20.dp)
                     )
                 }
-//            Box {
-//                TextButton(onClick = { menuOpen = true }) {
-//                    Text(stringResource(Res.string.preset_menu))
-//                }
-//                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-//                    DropdownMenuItem(
-//                        text = { Text(stringResource(Res.string.preset_like)) },
-//                        onClick = {
-//                            menuOpen = false
-//                            onToggleLike()
-//                        },
-//                    )
-//                    DropdownMenuItem(
-//                        text = { Text(stringResource(Res.string.preset_saved)) },
-//                        onClick = {
-//                            menuOpen = false
-//                            onSave()
-//                        },
-//                    )
-//                }
-//            }
             }
         }
     }
