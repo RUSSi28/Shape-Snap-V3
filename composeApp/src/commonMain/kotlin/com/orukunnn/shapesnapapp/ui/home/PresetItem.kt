@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -14,10 +15,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,7 +47,6 @@ internal fun PresetItem(
     onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var menuOpen by remember { mutableStateOf(false) }
     val liked = currentUid != null && currentUid in preset.likedUserIds
     val saved = currentUid != null && currentUid in preset.savedUserIds
 
@@ -70,7 +66,6 @@ internal fun PresetItem(
                     contentDescription = preset.displayName,
                     modifier =
                         Modifier
-//                            .fillMaxWidth()
                             .weight(2f)
                             .height(250.dp),
                     contentScale = ContentScale.Crop,
@@ -79,7 +74,6 @@ internal fun PresetItem(
                 Box(
                     modifier =
                         Modifier
-//                            .fillMaxWidth()
                             .weight(2f)
                             .height(250.dp),
                 ) {
@@ -96,12 +90,6 @@ internal fun PresetItem(
                     color = Color.DarkGray,
                 )
                 Spacer(Modifier.size(8.dp))
-//                Row(
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.Center,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                ) {
                 ShapeSnapButton(
                     imageVector = Tabler.Filled.Heart,
                     text = if (liked) {
@@ -112,9 +100,10 @@ internal fun PresetItem(
                     enabled = !liked,
                     color = Color(0xFFEA6399),
                     onClick = onToggleLike,
-//                        modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp)
                 )
-//                Spacer(Modifier.size(4.dp))
                 ShapeSnapButton(
                     imageVector = Tabler.Filled.FileDownload,
                     text = if (saved) {
@@ -125,25 +114,20 @@ internal fun PresetItem(
                     enabled = !saved,
                     color = Color(0xFF62BCE7),
                     onClick = onSave,
-//                        modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp)
                 )
-//                Spacer(Modifier.size(4.dp))
                 ShapeSnapButton(
                     imageVector = Tabler.Outline.Share,
                     text = "Share",
                     enabled = true,
                     color = Color.Gray,
-                    onClick = {  },
-//                        modifier = Modifier.weight(1f)
+                    onClick = { },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp)
                 )
-//                IconButton(onClick = { }) {
-//                    Icon(
-//                        imageVector = Tabler.Outline.Share,
-//                        contentDescription = null,
-//                        tint = Color.Gray,
-//                        modifier = Modifier.size(20.dp)
-//                    )
-//                }
                 Spacer(Modifier.size(8.dp))
                 Text(
                     stringResource(Res.string.home_posted_prefix) + DateFormat.convertShapeSnapDateFormat(
@@ -152,7 +136,6 @@ internal fun PresetItem(
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray,
                 )
-//                }
             }
         }
     }
