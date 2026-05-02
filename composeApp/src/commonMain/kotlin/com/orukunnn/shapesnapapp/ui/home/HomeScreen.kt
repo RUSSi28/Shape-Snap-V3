@@ -3,7 +3,6 @@ package com.orukunnn.shapesnapapp.ui.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,7 +39,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.home_empty
-import shapesnapv3.composeapp.generated.resources.home_title
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +54,7 @@ fun HomeScreen(
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
 
     val uid = currentUser?.uid
+    val storedPresets = currentUser?.storage?.size ?: 0
     val isLoggedIn = currentUser != null
 
     when (val state = homeState) {
@@ -72,16 +72,12 @@ fun HomeScreen(
 
         is HomeUiState.Success -> {
             HomeSuccessScreen(
-                title = stringResource(Res.string.home_title),
+                storagePresets = storedPresets,
                 presets = state.presets,
                 hasMore = state.hasMore,
                 isLoadingMore = isLoadingMore,
                 isRefreshing = isRefreshing,
                 currentUid = uid,
-                isLoggedIn = isLoggedIn,
-                onMenuClick = onMenuClick,
-                onLogoutClick = onLogoutClick,
-                onLoginClick = { viewModel.signInWithGoogle() },
                 onLoadMore = { viewModel.loadMore() },
                 onRefresh = { viewModel.refreshPresets() },
                 onToggleLike = { viewModel.toggleLike(it) },
@@ -98,16 +94,12 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeSuccessScreen(
-    title: String,
+    storagePresets: Int,
     presets: ImmutableList<Preset>,
     hasMore: Boolean,
     isLoadingMore: Boolean,
     isRefreshing: Boolean,
     currentUid: String?,
-    isLoggedIn: Boolean,
-    onMenuClick: () -> Unit,
-    onLogoutClick: () -> Unit,
-    onLoginClick: () -> Unit,
     onLoadMore: () -> Unit,
     onRefresh: () -> Unit,
     onToggleLike: (String) -> Unit,
@@ -119,11 +111,9 @@ private fun HomeSuccessScreen(
         contentWindowInsets = WindowInsets(0),
         topBar = {
             ShapeSnapHomeAppBar(
-                title = title,
-                isLoggedIn = isLoggedIn,
-                onMenuClick = onMenuClick,
-                onLoginClick = onLoginClick,
-                onLogoutClick = onLogoutClick,
+                storedPresets = storagePresets,
+                titleColor = Color(0xFF62BCE7),
+                containerColor = Color.White,
                 scrollBehavior = null,
             )
         },
@@ -185,8 +175,8 @@ private fun HomeScreenContent(
             columns = GridCells.Adaptive(340.dp),
             state = gridState,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(top = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+//            contentPadding = PaddingValues(top = 12.dp),
             modifier = modifier.fillMaxSize()
         ) {
             items(presets, key = { it.id }) { preset ->
@@ -217,16 +207,12 @@ private fun HomeScreenContent(
 @Composable
 private fun HomeScreenPreview() {
     HomeSuccessScreen(
-        title = stringResource(Res.string.home_title),
+        storagePresets = 3,
         presets = PresetsFactory.createPresets(),
         hasMore = true,
         isLoadingMore = false,
         isRefreshing = false,
         currentUid = null,
-        isLoggedIn = false,
-        onMenuClick = {},
-        onLogoutClick = {},
-        onLoginClick = {},
         onLoadMore = {},
         onRefresh = {},
         onToggleLike = {},

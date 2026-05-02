@@ -24,9 +24,9 @@
     <string name="appbar_login_arrow">ログイン→</string>
     <string name="bottom_search">検索</string>
     <string name="bottom_post">投稿</string>
-    <string name="bottom_home">ホーム</string>
+    <string name="bottom_home">発見</string>
     <string name="bottom_storage">保存</string>
-    <string name="bottom_profile">プロフ</string>
+    <string name="bottom_settings">設定</string>
     <string name="dialog_limit_title">保存枠の上限です</string>
     <string name="dialog_limit_message">無料枠（5件）に達しました。不要な保存を削除するか、別の方法をご利用ください。</string>
     <string name="dialog_limit_dismiss">閉じる</string>

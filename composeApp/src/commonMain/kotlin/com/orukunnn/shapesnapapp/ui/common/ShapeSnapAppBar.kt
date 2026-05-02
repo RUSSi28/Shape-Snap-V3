@@ -3,6 +3,8 @@ package com.orukunnn.shapesnapapp.ui.common
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -19,61 +21,46 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.woowla.compose.icon.collections.tabler.Tabler
-import com.woowla.compose.icon.collections.tabler.tabler.Filled
-import com.woowla.compose.icon.collections.tabler.tabler.Outline
-import com.woowla.compose.icon.collections.tabler.tabler.filled.User
-import com.woowla.compose.icon.collections.tabler.tabler.outline.User
-import org.jetbrains.compose.resources.stringResource
-import shapesnapv3.composeapp.generated.resources.Res
-import shapesnapv3.composeapp.generated.resources.home_title
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ShapeSnapHomeAppBar(
-    title: String,
-    isLoggedIn: Boolean,
-    onMenuClick: () -> Unit,
-    onLoginClick: () -> Unit,
-    onLogoutClick: () -> Unit,
+    storedPresets: Int,
+    titleColor: Color,
+    containerColor: Color,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     TopAppBar(
         title = {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = title,
+                    text = "Shape Snap",
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
+                val storageInfo = buildString {
+                    append("保存枠")
+                    append(" ")
+                    append(storedPresets)
+                    append("/5")
+                }
+                Text(
+                    text = storageInfo,
+                    style = MaterialTheme.typography.labelSmall,
+                )
+                Spacer(Modifier.size(16.dp))
             }
         },
-//        navigationIcon = {
-//            IconButton(onClick = onMenuClick) {
-//                Text("☰", style = MaterialTheme.typography.titleLarge)
-//            }
-//        },
-//        actions = {
-//            if (isLoggedIn) {
-//                IconButton(
-//                    imageVector = Tabler.Filled.User,
-//                    onClick = onLogoutClick,
-//                )
-//            } else {
-//                IconButton(
-//                    imageVector = Tabler.Outline.User,
-//                    onClick = onLoginClick,
-//                )
-//            }
-//        },
         colors =
             TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = containerColor,
+                titleContentColor = titleColor,
             ),
         scrollBehavior = scrollBehavior,
         modifier = modifier,
@@ -131,11 +118,9 @@ fun ShapeSnapAppBar(
 @Composable
 private fun ShapeSnapHomeAppBarWithLogoutPreview() {
     ShapeSnapHomeAppBar(
-        title = stringResource(Res.string.home_title),
-        isLoggedIn = true,
-        onMenuClick = {},
-        onLoginClick = {},
-        onLogoutClick = {},
+        storedPresets = 3,
+        titleColor = Color(0xFF62BCE7),
+        containerColor = Color.White,
     )
 }
 
@@ -144,10 +129,8 @@ private fun ShapeSnapHomeAppBarWithLogoutPreview() {
 @Composable
 private fun ShapeSnapHomeAppBarWithLoginPreview() {
     ShapeSnapHomeAppBar(
-        title = stringResource(Res.string.home_title),
-        isLoggedIn = false,
-        onMenuClick = {},
-        onLoginClick = {},
-        onLogoutClick = {},
+        storedPresets = 3,
+        titleColor = Color.White,
+        containerColor = Color(0xFF62BCE7),
     )
 }

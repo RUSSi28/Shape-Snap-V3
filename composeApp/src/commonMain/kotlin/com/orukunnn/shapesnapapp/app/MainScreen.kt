@@ -51,30 +51,13 @@ fun MainScreen() {
         } == true
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets(0),
-    ) { padding ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(padding),
-        ) {
-            AppNavHost(
-                address = user?.email.orEmpty(),
-                navController = navController,
-                modifier = Modifier.fillMaxSize(),
-                onMenuClick = { showSheet = true },
-                onLogoutClick = { mainViewModel.requestLogoutConfirmation() },
-            )
+        bottomBar = {
             if (isBottomBarVisible) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier =
-                        Modifier
-                            .align(Alignment.BottomCenter)
-                            .windowInsetsPadding(
-                                WindowInsets.navigationBars.only(WindowInsetsSides.Bottom),
-                            )
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.navigationBars.only(WindowInsetsSides.Bottom),
+                    )
                 ) {
                     ShapeSnapBottomBar(
                         currentDestination = currentDestination,
@@ -111,6 +94,23 @@ fun MainScreen() {
                     AdBannerView()
                 }
             }
+
+        },
+        modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets(0),
+    ) { padding ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(padding),
+        ) {
+            AppNavHost(
+                address = user?.email.orEmpty(),
+                navController = navController,
+                modifier = Modifier.fillMaxSize(),
+                onMenuClick = { showSheet = true },
+                onLogoutClick = { mainViewModel.requestLogoutConfirmation() },
+            )
         }
     }
 
