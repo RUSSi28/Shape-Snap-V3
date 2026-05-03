@@ -10,4 +10,5 @@ target 'iosApp' do
   pod 'FirebaseAuth'
   pod 'FirebaseFirestore'
   pod 'GoogleSignIn', '~> 8.0'
+  pod 'Google-Mobile-Ads-SDK', '~> 12.4'
 end

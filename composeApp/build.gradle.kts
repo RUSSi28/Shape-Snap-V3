@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -21,9 +20,17 @@ kotlin {
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
+        // AdMob は GoogleMobileAds の巨大な cinterop を避け、UIKit だけのヘッダー + iosApp の .m 実装で連携する。
+        iosTarget.compilations.getByName("main").cinterops.create("shapesnapAds") {
+            definitionFile.set(layout.projectDirectory.file("src/nativeInterop/cinterop/shapesnapAds.def"))
+            includeDirs(layout.projectDirectory.dir("src/nativeInterop/cinterop"))
+        }
+
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // シンボルは iosApp の shapesnap_ads_bridge.m で解決（Pods の Google-Mobile-Ads-SDK とリンク）
+            linkerOpts("-undefined", "dynamic_lookup")
         }
     }
 
