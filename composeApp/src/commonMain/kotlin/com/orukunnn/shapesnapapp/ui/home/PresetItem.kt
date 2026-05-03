@@ -129,10 +129,17 @@ internal fun PresetItem(
                         .padding(end = 16.dp)
                 )
                 Spacer(Modifier.size(8.dp))
+                val postedDate = buildString {
+                    append(stringResource(Res.string.home_posted_prefix))
+                    append("\n")
+                    append(
+                        DateFormat.convertShapeSnapDateFormat(
+                            preset.createdAt
+                        )
+                    )
+                }
                 Text(
-                    stringResource(Res.string.home_posted_prefix) + DateFormat.convertShapeSnapDateFormat(
-                        preset.createdAt
-                    ),
+                    text = postedDate,
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray,
                 )
