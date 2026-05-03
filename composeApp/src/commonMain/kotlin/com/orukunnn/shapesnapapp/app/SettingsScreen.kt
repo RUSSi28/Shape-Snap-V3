@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.sp
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
-import shapesnapv3.composeapp.generated.resources.profile_title
+import shapesnapv3.composeapp.generated.resources.settings_title
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
+fun SettingsScreen(
     address: String,
     onRequestToPopBackStack: () -> Unit,
     onRequestToLogOut: () -> Unit,
@@ -40,7 +40,7 @@ fun ProfileScreen(
         contentWindowInsets = WindowInsets(0),
         topBar = {
             ShapeSnapAppBar(
-                title = stringResource(Res.string.profile_title),
+                title = stringResource(Res.string.settings_title),
                 onArrowBackIconClick = onRequestToPopBackStack,
                 scrollBehavior = null
             )
@@ -61,7 +61,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = MaterialTheme.colorScheme.surface,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 20.dp, vertical = 8.dp)
@@ -105,8 +105,8 @@ fun ProfileScreen(
 
 @Preview
 @Composable
-private fun ProfileScreenPreview() {
-    ProfileScreen(
+private fun SettingsScreenPreview() {
+    SettingsScreen(
         address = "address@gmail.com",
         onRequestToPopBackStack = {},
         onRequestToLogOut = {},

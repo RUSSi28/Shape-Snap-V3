@@ -24,8 +24,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.orukunnn.shapesnapapp.app.HomeDestination
 import com.orukunnn.shapesnapapp.app.PostsDestination
-import com.orukunnn.shapesnapapp.app.ProfileDestination
 import com.orukunnn.shapesnapapp.app.SearchDestination
+import com.orukunnn.shapesnapapp.app.SettingsDestination
 import com.orukunnn.shapesnapapp.app.StorageDestination
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Filled
@@ -99,7 +99,7 @@ fun ShapeSnapBottomBar(
         BottomBarItem(
             label = stringResource(Res.string.bottom_settings),
             selected =
-                currentDestination?.hierarchy?.any { it.hasRoute(ProfileDestination::class) } ==
+                currentDestination?.hierarchy?.any { it.hasRoute(SettingsDestination::class) } ==
                         true,
             icon = Tabler.Filled.Settings,
             onClick = onNavigateProfile,

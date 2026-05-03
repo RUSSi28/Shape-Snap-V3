@@ -41,8 +41,8 @@ fun AppNavHost(
                 onRequestToPopBackStack = { navController.popBackStack() }
             )
         }
-        composable<ProfileDestination> {
-            ProfileScreen(
+        composable<SettingsDestination> {
+            SettingsScreen(
                 address = address,
                 onRequestToPopBackStack = { navController.popBackStack() },
                 onRequestToLogOut = onLogoutClick,

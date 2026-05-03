@@ -15,4 +15,4 @@ data object StorageDestination
 data object SearchDestination
 
 @Serializable
-data object ProfileDestination
+data object SettingsDestination

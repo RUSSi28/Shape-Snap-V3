@@ -47,7 +47,7 @@ fun MainScreen() {
                     dest.hasRoute(SearchDestination::class) ||
                     dest.hasRoute(PostsDestination::class) ||
                     dest.hasRoute(StorageDestination::class) ||
-                    dest.hasRoute(ProfileDestination::class)
+                    dest.hasRoute(SettingsDestination::class)
         } == true
 
     Scaffold(
@@ -84,8 +84,8 @@ fun MainScreen() {
                             }
                         },
                         onNavigateProfile = {
-                            if (!currentDestination.isOnRoute(ProfileDestination::class)) {
-                                navController.navigate(ProfileDestination) {
+                            if (!currentDestination.isOnRoute(SettingsDestination::class)) {
+                                navController.navigate(SettingsDestination) {
                                     launchSingleTop = true
                                 }
                             }
