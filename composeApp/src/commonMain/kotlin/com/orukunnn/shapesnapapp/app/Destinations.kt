@@ -4,3 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object TermsOfServiceDestination
+
+@Serializable
+data object ContactDestination

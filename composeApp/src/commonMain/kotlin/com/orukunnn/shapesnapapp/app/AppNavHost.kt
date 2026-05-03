@@ -2,7 +2,6 @@ package com.orukunnn.shapesnapapp.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,11 +46,17 @@ fun AppNavHost(
                 address = address,
                 onRequestToPopBackStack = { navController.popBackStack() },
                 onRequestToLogOut = onLogoutClick,
-                onRequestToNavigateToTermsOfService = { navController.navigate(TermsOfServiceDestination) }
+                onRequestToNavigateToTermsOfService = { navController.navigate(TermsOfServiceDestination) },
+                onRequestToNavigateToContact = { navController.navigate(ContactDestination) },
             )
         }
         composable<TermsOfServiceDestination> {
             TermsOfServiceScreen(
+                onRequestToPopBackStack = { navController.popBackStack() }
+            )
+        }
+        composable<ContactDestination> {
+            ContactScreen(
                 onRequestToPopBackStack = { navController.popBackStack() }
             )
         }
