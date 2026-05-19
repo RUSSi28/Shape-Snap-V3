@@ -1,0 +1,54 @@
+---
+description: ShapeSnapV3 project rules
+alwaysApply: true
+---
+
+# ShapeSnapV3 Project Rules
+
+- 回答は日本語で行う。
+- 回答には判断材料を必ず提示する。
+- わからないことは推測で断定せず、「わからない」と明示する。
+- 変更前に関連ファイルを読み、既存の設計、命名、ディレクトリ構成、実装パターンを確認する。
+- 不要な大規模リファクタリングは行わない。
+- ユーザーが明示しない限り、既存ファイルの削除や破壊的な Git 操作は行わない。
+
+## Project Context
+
+- このリポジトリは Kotlin Multiplatform / Compose Multiplatform プロジェクト。
+- 共有コードは `composeApp/src/commonMain` にある。
+- Android 固有コードは `composeApp/src/androidMain` にある。
+- iOS 固有コードは `composeApp/src/iosMain` にある。
+- iOS アプリ側のコードは `iosApp` にある。
+- 仕様や意図の確認が必要な場合は、まず `ShapeSnapV3_仕様書.md` と `README.md` を参照する。
+- 追加の作業方針が必要な場合は `AGENTS.md` も参照する。
+
+## Build And Verification
+
+- Android Debug ビルドの基本コマンドは `./gradlew :composeApp:assembleDebug`。
+- テストの基本コマンドは `./gradlew test`。
+- 変更後は、影響範囲に応じて関連する Gradle タスクを実行する。
+- 確認コマンドを実行できない場合は、その理由を回答に明記する。
+
+## Safety
+
+- `local.properties` や秘密情報を含むファイルは編集・公開しない。
+- Firebase、Google、AdMob、認証関連の設定値は不用意に出力しない。
+- `iosApp/Pods` 配下は依存関係の生成物として扱い、必要がない限り直接編集しない。
+- `build`、`.gradle`、IDE 生成物などのビルド成果物は編集対象にしない。
+- Android / iOS の片方だけに影響する変更か、共通コードに影響する変更かを確認してから実装する。
+
+## UI Changes
+
+- UI 変更では、既存の Compose コンポーネント、テーマ、余白、色、命名に合わせる。
+- 画面やコンポーネントを追加する場合は、既存の `composeApp/src/commonMain` 配下の構成に合わせる。
+- 表示文言は、既存画面のトーンに合わせて日本語で統一する。
+
+## Final Response
+
+作業完了時の回答には、原則として以下を含める。
+
+- 変更した内容
+- 判断材料
+- 影響範囲
+- 実行した確認コマンド
+- 確認できなかったことがあればその理由
