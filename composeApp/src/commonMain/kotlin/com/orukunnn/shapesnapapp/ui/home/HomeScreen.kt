@@ -3,10 +3,13 @@ package com.orukunnn.shapesnapapp.ui.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -14,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,11 +32,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
 import com.orukunnn.shapesnapapp.ui.common.LimitReachedDialog
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapHomeAppBar
+import com.woowla.compose.icon.collections.tabler.Tabler
+import com.woowla.compose.icon.collections.tabler.tabler.Outline
+import com.woowla.compose.icon.collections.tabler.tabler.outline.Crown
+import com.woowla.compose.icon.collections.tabler.tabler.outline.Timeline
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.stringResource
@@ -43,8 +52,6 @@ import shapesnapv3.composeapp.generated.resources.home_empty
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onMenuClick: () -> Unit,
-    onLogoutClick: () -> Unit,
     viewModel: HomeScreenViewModel = koinViewModel(),
 ) {
     val homeState by viewModel.homeState.collectAsStateWithLifecycle()
@@ -135,7 +142,6 @@ private fun HomeSuccessScreen(
                 onLoadMore = onLoadMore,
                 onToggleLike = onToggleLike,
                 onSave = onSave,
-                modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
     }
@@ -175,17 +181,62 @@ private fun HomeScreenContent(
             columns = GridCells.Adaptive(340.dp),
             state = gridState,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-//            contentPadding = PaddingValues(top = 12.dp),
             modifier = modifier.fillMaxSize()
         ) {
-            items(presets, key = { it.id }) { preset ->
-                PresetItem(
-                    preset = preset,
-                    currentUid = currentUid,
-                    onToggleLike = { onToggleLike(preset.id) },
-                    onSave = { onSave(preset.id) },
+            item(key = "TrendsHeading") {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Tabler.Outline.Crown,
+                        contentDescription = null,
+                        tint = Color.DarkGray,
+                    )
+                    Spacer(Modifier.size(4.dp))
+                    Text(
+                        text = "Trends",
+                        fontSize = 18.sp,
+                        color = Color.DarkGray,
+                    )
+                }
+            }
+            item(key = "TrendItem") {
+                TrendsLazyRow(
+                    presets = presets,
                 )
+            }
+            item(key = "PresetsHeading") {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Tabler.Outline.Timeline,
+                        contentDescription = null,
+                        tint = Color.DarkGray,
+                    )
+                    Spacer(Modifier.size(4.dp))
+                    Text(
+                        text = "Presets",
+                        fontSize = 18.sp,
+                        color = Color.DarkGray,
+                    )
+                }
+            }
+            items(presets, key = { it.id }) { preset ->
+                Column {
+                    if (presets[0].id != preset.id) {
+                        Spacer(Modifier.size(16.dp))
+                    }
+                    PresetItem(
+                        preset = preset,
+                        currentUid = currentUid,
+                        onToggleLike = { onToggleLike(preset.id) },
+                        onSave = { onSave(preset.id) },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
             }
             if (isLoadingMore) {
                 item(span = { GridItemSpan(maxLineSpan) }) {

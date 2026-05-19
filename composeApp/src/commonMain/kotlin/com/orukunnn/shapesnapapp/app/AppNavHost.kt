@@ -14,7 +14,6 @@ fun AppNavHost(
     address: String,
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onMenuClick: () -> Unit,
     onLogoutClick: () -> Unit,
 ) {
     NavHost(
@@ -23,10 +22,7 @@ fun AppNavHost(
         modifier = modifier,
     ) {
         composable<HomeDestination> {
-            HomeScreen(
-                onMenuClick = onMenuClick,
-                onLogoutClick = onLogoutClick,
-            )
+            HomeScreen()
         }
         composable<PostsDestination> {
             PostsScreen(onBack = { navController.popBackStack() })

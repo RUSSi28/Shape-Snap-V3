@@ -108,7 +108,6 @@ fun MainScreen() {
                 address = user?.email.orEmpty(),
                 navController = navController,
                 modifier = Modifier.fillMaxSize(),
-                onMenuClick = { showSheet = true },
                 onLogoutClick = { mainViewModel.requestLogoutConfirmation() },
             )
         }
