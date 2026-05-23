@@ -31,7 +31,7 @@ internal fun TrendsLazyRow(
                 AsyncImage(
                     model = preset.imageUrl,
                     contentDescription = preset.id,
-                    modifier = Modifier.size(150.dp)
+                    modifier = Modifier.size(180.dp)
                 )
 
             }
