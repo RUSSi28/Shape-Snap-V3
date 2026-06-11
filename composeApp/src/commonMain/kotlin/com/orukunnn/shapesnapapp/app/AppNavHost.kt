@@ -5,16 +5,17 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.ui.home.HomeScreen
 import com.orukunnn.shapesnapapp.ui.posts.PostsScreen
 import com.orukunnn.shapesnapapp.ui.storage.StorageScreen
 
 @Composable
 fun AppNavHost(
-    address: String,
+    userProfile: UserProfile,
     navController: NavHostController,
-    modifier: Modifier = Modifier,
     onLogoutClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
@@ -22,7 +23,7 @@ fun AppNavHost(
         modifier = modifier,
     ) {
         composable<HomeDestination> {
-            HomeScreen()
+            HomeScreen(currentUser = userProfile)
         }
         composable<PostsDestination> {
             PostsScreen(onBack = { navController.popBackStack() })
@@ -39,10 +40,14 @@ fun AppNavHost(
         }
         composable<SettingsDestination> {
             SettingsScreen(
-                address = address,
+                address = userProfile.email.orEmpty(),
                 onRequestToPopBackStack = { navController.popBackStack() },
                 onRequestToLogOut = onLogoutClick,
-                onRequestToNavigateToTermsOfService = { navController.navigate(TermsOfServiceDestination) },
+                onRequestToNavigateToTermsOfService = {
+                    navController.navigate(
+                        TermsOfServiceDestination
+                    )
+                },
                 onRequestToNavigateToContact = { navController.navigate(ContactDestination) },
             )
         }

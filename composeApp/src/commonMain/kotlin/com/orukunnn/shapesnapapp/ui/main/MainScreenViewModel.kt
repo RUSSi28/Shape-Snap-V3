@@ -1,13 +1,13 @@
 package com.orukunnn.shapesnapapp.ui.main
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import androidx.lifecycle.viewModelScope
 import com.orukunnn.shapesnapapp.data.datasource.KeyValueDatasource
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.data.model.user.mergeWithFirestore
 import com.orukunnn.shapesnapapp.data.repository.auth.AuthRepository
 import com.orukunnn.shapesnapapp.data.repository.user.UserRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,25 +20,30 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainScreenViewModel(
+    private val userProfile: UserProfile?,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val keyValueDatasource: KeyValueDatasource,
 ) : ViewModel() {
     val sheetUserProfile: StateFlow<UserProfile?> =
-        authRepository.currentUser
-            .flatMapLatest { auth ->
-                if (auth == null) {
-                    flowOf(null)
-                } else {
-                    userRepository.observeUser(auth.uid).map { firestore ->
-                        auth.mergeWithFirestore(firestore)
+        if (userProfile != null) {
+            MutableStateFlow(userProfile)
+        } else {
+            authRepository.currentUser
+                .flatMapLatest { auth ->
+                    if (auth == null) {
+                        flowOf(null)
+                    } else {
+                        userRepository.observeUser(auth.uid).map { firestore ->
+                            auth.mergeWithFirestore(firestore)
+                        }
                     }
-                }
-            }.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = null,
-            )
+                }.stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5_000),
+                    initialValue = null,
+                )
+        }
 
     private val _showLogoutConfirmDialog = MutableStateFlow(false)
     val showLogoutConfirmDialog: StateFlow<Boolean> = _showLogoutConfirmDialog.asStateFlow()

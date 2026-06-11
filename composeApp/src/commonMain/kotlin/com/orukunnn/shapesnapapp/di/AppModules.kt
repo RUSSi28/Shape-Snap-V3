@@ -6,6 +6,7 @@ import com.orukunnn.shapesnapapp.data.datasource.FirestoreDatasource
 import com.orukunnn.shapesnapapp.data.datasource.FirestoreDatasourceImpl
 import com.orukunnn.shapesnapapp.data.datasource.KeyValueDatasource
 import com.orukunnn.shapesnapapp.data.datasource.KeyValueDatasourceImpl
+import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.data.repository.auth.AuthRepository
 import com.orukunnn.shapesnapapp.data.repository.auth.AuthRepositoryImpl
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetRepository
@@ -23,6 +24,7 @@ import com.russhwolf.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -33,12 +35,25 @@ fun appModule() =
         single<KeyValueDatasource> { KeyValueDatasourceImpl(get()) }
         single<AuthDatasource> { AuthDatasourceImpl() }
         single<FirestoreDatasource> { FirestoreDatasourceImpl() }
-        single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
+        single<AuthRepository> { AuthRepositoryImpl(get()) }
         single<PresetRepository> { PresetRepositoryImpl(get(), get()) }
         single<UserPostsRepository> { UserPostsRepositoryImpl(get()) }
         single<UserRepository> { UserRepositoryImpl(get()) }
-        viewModelOf(::HomeScreenViewModel)
-        viewModelOf(::MainScreenViewModel)
+        viewModel<HomeScreenViewModel> { (userProfile: UserProfile) ->
+            HomeScreenViewModel(
+                userProfile = userProfile,
+                presetRepository = get(),
+                userRepository = get(),
+            )
+        }
+        viewModel<MainScreenViewModel> { (userProfile: UserProfile?) ->
+            MainScreenViewModel(
+                userProfile = userProfile,
+                authRepository = get(),
+                userRepository = get(),
+                keyValueDatasource = get(),
+            )
+        }
         viewModelOf(::PostsScreenViewModel)
         viewModelOf(::StorageScreenViewModel)
         viewModelOf(::LoginViewModel)

@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
+import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.ui.common.LimitReachedDialog
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapHomeAppBar
 import com.woowla.compose.icon.collections.tabler.Tabler
@@ -46,6 +47,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.home_empty
 import shapesnapv3.composeapp.generated.resources.home_section_presets
@@ -54,17 +56,16 @@ import shapesnapv3.composeapp.generated.resources.home_section_trends
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = koinViewModel(),
+    currentUser: UserProfile,
+    viewModel: HomeScreenViewModel = koinViewModel { parametersOf(currentUser) },
 ) {
     val homeState by viewModel.homeState.collectAsStateWithLifecycle()
     val isLoadingMore by viewModel.isLoadingMore.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val showLimit by viewModel.showLimitReachedDialog.collectAsStateWithLifecycle()
-    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
 
-    val uid = currentUser?.uid
-    val storedPresets = currentUser?.storage?.size ?: 0
-    val isLoggedIn = currentUser != null
+    val uid = currentUser.uid
+    val storedPresets = currentUser.storage.size
 
     when (val state = homeState) {
         HomeUiState.Loading -> {
