@@ -34,7 +34,7 @@ fun appModule() =
         single<AuthDatasource> { AuthDatasourceImpl() }
         single<FirestoreDatasource> { FirestoreDatasourceImpl() }
         single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
-        single<PresetRepository> { PresetRepositoryImpl(get()) }
+        single<PresetRepository> { PresetRepositoryImpl(get(), get()) }
         single<UserPostsRepository> { UserPostsRepositoryImpl(get()) }
         single<UserRepository> { UserRepositoryImpl(get()) }
         viewModelOf(::HomeScreenViewModel)

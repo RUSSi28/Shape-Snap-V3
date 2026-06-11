@@ -15,6 +15,8 @@ import org.koin.compose.koinInject
 @Composable
 fun App() {
     AppTheme {
+        // プリセット購読をホーム表示前に開始し、起動時の再ロードを抑える
+//        koinInject<PresetRepository>()
         val authRepository: AuthRepository = koinInject()
         val user by authRepository.currentUser.collectAsStateWithLifecycle()
         val isAuthReady by authRepository.isAuthReady.collectAsStateWithLifecycle()

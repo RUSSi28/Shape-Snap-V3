@@ -48,8 +48,14 @@ class HomeScreenViewModel(
     private val userRepository: UserRepository,
     private val credentialProvider: CredentialProvider,
 ) : ViewModel() {
-    private val _homeState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
-    val homeState: StateFlow<HomeUiState> = _homeState.asStateFlow()
+    val homeState: StateFlow<HomeUiState> =
+        presetRepository.presets
+            .map { presets -> presets.toHomeUiState() }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = presetRepository.presets.value.toHomeUiState(),
+            )
 
     private val _isLoadingMore = MutableStateFlow(false)
     val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
@@ -74,15 +80,14 @@ class HomeScreenViewModel(
                 }
             }.stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = null,
+                started = SharingStarted.Eagerly,
+                initialValue = authRepository.currentUser.value,
             )
 
     private val _signInState = MutableStateFlow<LoadState<Unit>>(LoadState.Idle)
     val signInState: StateFlow<LoadState<Unit>> = _signInState.asStateFlow()
 
     init {
-        AppLogger.d("[HomeVM] init called – new ViewModel instance created")
         viewModelScope.launch {
             authUser
                 .filterNotNull()
@@ -91,24 +96,6 @@ class HomeScreenViewModel(
                     userRepository
                         .ensureUserDocument(auth.uid, auth.displayName, auth.photoUrl)
                         .onFailure { AppLogger.w("ensureUserDocument skipped", it) }
-                }
-        }
-        // Storage と同様、コレクションの snapshots 購読（observePresets）で取得する
-        viewModelScope.launch {
-            presetRepository
-                .observePresets()
-                .catch { e ->
-                    AppLogger.e("home observePresets failed", e)
-                    _homeState.value = HomeUiState.Error(e.message ?: "error")
-                }
-                .collect { presets ->
-                    val ordered =
-                        presets.sortedByDescending { it.id }
-                    _homeState.value =
-                        HomeUiState.Success(
-                            presets = ordered.toPersistentList(),
-                            hasMore = false,
-                        )
                 }
         }
     }
@@ -175,5 +162,16 @@ class HomeScreenViewModel(
 
     companion object {
         const val FREE_LIMIT: Int = 5
+
+        private fun List<Preset>?.toHomeUiState(): HomeUiState =
+            when (this) {
+                null ->
+                    HomeUiState.Loading
+                else ->
+                    HomeUiState.Success(
+                        presets = sortedByDescending { it.id }.toPersistentList(),
+                        hasMore = false,
+                    )
+            }
     }
 }
