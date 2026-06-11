@@ -20,16 +20,20 @@ import com.orukunnn.shapesnapapp.ui.main.MainScreenViewModel
 import com.orukunnn.shapesnapapp.ui.posts.PostsScreenViewModel
 import com.orukunnn.shapesnapapp.ui.storage.StorageScreenViewModel
 import com.russhwolf.settings.Settings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 fun appModule() =
     module {
         single { Settings() }
+        single { CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate) }
         single<KeyValueDatasource> { KeyValueDatasourceImpl(get()) }
         single<AuthDatasource> { AuthDatasourceImpl() }
         single<FirestoreDatasource> { FirestoreDatasourceImpl() }
-        single<AuthRepository> { AuthRepositoryImpl(get()) }
+        single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
         single<PresetRepository> { PresetRepositoryImpl(get()) }
         single<UserPostsRepository> { UserPostsRepositoryImpl(get()) }
         single<UserRepository> { UserRepositoryImpl(get()) }

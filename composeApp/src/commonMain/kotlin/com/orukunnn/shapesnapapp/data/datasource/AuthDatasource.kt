@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface AuthDatasource {
     val authState: Flow<UserProfile?>
 
+    fun currentUserSnapshot(): UserProfile?
+
     suspend fun signInWithGoogleCredentials(idToken: String, accessToken: String?): Result<Unit>
 
     suspend fun signOut()

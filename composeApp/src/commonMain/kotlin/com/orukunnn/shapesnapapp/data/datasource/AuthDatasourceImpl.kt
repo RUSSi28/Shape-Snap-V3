@@ -2,6 +2,7 @@ package com.orukunnn.shapesnapapp.data.datasource
 
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.GoogleAuthProvider
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.Flow
@@ -12,16 +13,10 @@ class AuthDatasourceImpl : AuthDatasource {
     private val auth get() = Firebase.auth
 
     override val authState: Flow<UserProfile?> =
-        auth.authStateChanged.map { user ->
-            user?.let {
-                UserProfile(
-                    uid = it.uid,
-                    displayName = it.displayName,
-                    email = it.email,
-                    photoUrl = it.photoURL,
-                )
-            }
-        }
+        auth.authStateChanged.map { user -> user?.toUserProfile() }
+
+    override fun currentUserSnapshot(): UserProfile? =
+        auth.currentUser?.toUserProfile()
 
     override suspend fun signInWithGoogleCredentials(
         idToken: String,
@@ -36,3 +31,11 @@ class AuthDatasourceImpl : AuthDatasource {
         auth.signOut()
     }
 }
+
+private fun FirebaseUser.toUserProfile(): UserProfile =
+    UserProfile(
+        uid = uid,
+        displayName = displayName,
+        email = email,
+        photoUrl = photoURL,
+    )
