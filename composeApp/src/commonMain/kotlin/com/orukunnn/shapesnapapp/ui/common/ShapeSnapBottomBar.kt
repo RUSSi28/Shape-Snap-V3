@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,7 @@ import com.orukunnn.shapesnapapp.app.HomeDestination
 import com.orukunnn.shapesnapapp.app.PostsDestination
 import com.orukunnn.shapesnapapp.app.SearchDestination
 import com.orukunnn.shapesnapapp.app.SettingsDestination
+import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.app.StorageDestination
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Filled
@@ -56,7 +56,7 @@ fun ShapeSnapBottomBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White),
+            .background(ShapeSnapColors.Surface),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -118,7 +118,7 @@ private fun BottomBarItem(
 ) {
     val color =
         if (selected) {
-            Color(0xFF62BCE7)
+            ShapeSnapColors.Brand
         } else {
             MaterialTheme.colorScheme.onSurfaceVariant
         }

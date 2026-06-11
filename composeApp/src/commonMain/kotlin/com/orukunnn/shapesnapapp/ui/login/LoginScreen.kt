@@ -14,10 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.orukunnn.shapesnapapp.app.ShapeSnapButton
+import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.ui.common.LoadState
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Outline
@@ -26,6 +26,7 @@ import com.woowla.compose.icon.collections.tabler.tabler.outline.Mail
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import shapesnapv3.composeapp.generated.resources.Res
+import shapesnapv3.composeapp.generated.resources.login_contact
 import shapesnapv3.composeapp.generated.resources.login_error
 import shapesnapv3.composeapp.generated.resources.login_google
 
@@ -67,16 +68,16 @@ private fun LoginScreen(
             imageVector = Tabler.Outline.BrandGoogle,
             text = stringResource(Res.string.login_google),
             enabled = true,
-            color = Color(0xFFEA6399),
+            color = ShapeSnapColors.Accent,
             onClick = onRequestToLogin,
             modifier = Modifier.fillMaxWidth(),
             contentDescription = null,
         )
         ShapeSnapButton(
             imageVector = Tabler.Outline.Mail,
-            text = "お問い合わせはこちら",
+            text = stringResource(Res.string.login_contact),
             enabled = true,
-            color = Color(0xFF62BCE7),
+            color = ShapeSnapColors.Brand,
             onClick = onRequestToContact,
             modifier = Modifier.fillMaxWidth(),
             contentDescription = null,

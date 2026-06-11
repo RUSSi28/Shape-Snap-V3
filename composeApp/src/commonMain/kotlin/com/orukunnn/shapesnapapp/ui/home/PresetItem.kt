@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.orukunnn.shapesnapapp.app.ShapeSnapButton
+import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.core.util.DateFormat
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
@@ -37,7 +38,10 @@ import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.home_posted_prefix
 import shapesnapv3.composeapp.generated.resources.preset_like
+import shapesnapv3.composeapp.generated.resources.preset_liked
+import shapesnapv3.composeapp.generated.resources.preset_save
 import shapesnapv3.composeapp.generated.resources.preset_saved
+import shapesnapv3.composeapp.generated.resources.preset_share
 
 @Composable
 internal fun PresetItem(
@@ -87,18 +91,18 @@ internal fun PresetItem(
                 Text(
                     text = preset.characterTagId,
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.DarkGray,
+                    color = ShapeSnapColors.TextSecondary,
                 )
                 Spacer(Modifier.size(8.dp))
                 ShapeSnapButton(
                     imageVector = Tabler.Filled.Heart,
                     text = if (liked) {
-                        "liked"
+                        stringResource(Res.string.preset_liked)
                     } else {
                         stringResource(Res.string.preset_like)
                     },
                     enabled = !liked,
-                    color = Color(0xFFEA6399),
+                    color = ShapeSnapColors.Accent,
                     onClick = onToggleLike,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -109,10 +113,10 @@ internal fun PresetItem(
                     text = if (saved) {
                         stringResource(Res.string.preset_saved)
                     } else {
-                        "Save"
+                        stringResource(Res.string.preset_save)
                     },
                     enabled = !saved,
-                    color = Color(0xFF62BCE7),
+                    color = ShapeSnapColors.Brand,
                     onClick = onSave,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -120,9 +124,9 @@ internal fun PresetItem(
                 )
                 ShapeSnapButton(
                     imageVector = Tabler.Outline.Share,
-                    text = "Share",
+                    text = stringResource(Res.string.preset_share),
                     enabled = true,
-                    color = Color.Gray,
+                    color = ShapeSnapColors.TextTertiary,
                     onClick = { },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -141,7 +145,7 @@ internal fun PresetItem(
                 Text(
                     text = postedDate,
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray,
+                    color = ShapeSnapColors.TextTertiary,
                 )
             }
         }

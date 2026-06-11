@@ -54,7 +54,7 @@ private fun ShapeSnapButtonPreview() {
         imageVector = Tabler.Filled.Heart,
         text = "Like",
         enabled = true,
-        color = Color(0xFFEA6399),
+        color = ShapeSnapColors.Accent,
         onClick = {},
     )
 }

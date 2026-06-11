@@ -41,14 +41,18 @@ fun MainScreen() {
     var showSheet by remember { mutableStateOf(false) }
     val showLogout by mainViewModel.showLogoutConfirmDialog.collectAsState()
     val sheetUser by mainViewModel.sheetUserProfile.collectAsState()
+    // currentDestination が null（NavHost 初期化前）の場合も true にする。
+    // false → true の変化で Scaffold の SubcomposeLayout がコンテンツを再生成し
+    // NavHost・ViewModel が再構築されるのを防ぐ。
     val isBottomBarVisible =
-        currentDestination?.hierarchy?.any { dest ->
+        currentDestination == null ||
+        currentDestination.hierarchy.any { dest ->
             dest.hasRoute(HomeDestination::class) ||
                     dest.hasRoute(SearchDestination::class) ||
                     dest.hasRoute(PostsDestination::class) ||
                     dest.hasRoute(StorageDestination::class) ||
                     dest.hasRoute(SettingsDestination::class)
-        } == true
+        }
 
     Scaffold(
         bottomBar = {

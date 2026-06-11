@@ -29,11 +29,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
 import com.orukunnn.shapesnapapp.ui.common.LimitReachedDialog
@@ -48,6 +48,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.home_empty
+import shapesnapv3.composeapp.generated.resources.home_section_presets
+import shapesnapv3.composeapp.generated.resources.home_section_trends
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,8 +121,8 @@ private fun HomeSuccessScreen(
         topBar = {
             ShapeSnapHomeAppBar(
                 storedPresets = storagePresets,
-                titleColor = Color(0xFF62BCE7),
-                containerColor = Color.White,
+                titleColor = ShapeSnapColors.Brand,
+                containerColor = ShapeSnapColors.Surface,
                 scrollBehavior = null,
             )
         },
@@ -191,13 +193,13 @@ private fun HomeScreenContent(
                     Icon(
                         imageVector = Tabler.Outline.Crown,
                         contentDescription = null,
-                        tint = Color.DarkGray,
+                        tint = ShapeSnapColors.TextSecondary,
                     )
                     Spacer(Modifier.size(4.dp))
                     Text(
-                        text = "Trends",
+                        text = stringResource(Res.string.home_section_trends),
                         fontSize = 18.sp,
-                        color = Color.DarkGray,
+                        color = ShapeSnapColors.TextSecondary,
                     )
                 }
             }
@@ -214,13 +216,13 @@ private fun HomeScreenContent(
                     Icon(
                         imageVector = Tabler.Outline.Timeline,
                         contentDescription = null,
-                        tint = Color.DarkGray,
+                        tint = ShapeSnapColors.TextSecondary,
                     )
                     Spacer(Modifier.size(4.dp))
                     Text(
-                        text = "Presets",
+                        text = stringResource(Res.string.home_section_presets),
                         fontSize = 18.sp,
-                        color = Color.DarkGray,
+                        color = ShapeSnapColors.TextSecondary,
                     )
                 }
             }

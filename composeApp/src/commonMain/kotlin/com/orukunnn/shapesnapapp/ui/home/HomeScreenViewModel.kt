@@ -82,6 +82,7 @@ class HomeScreenViewModel(
     val signInState: StateFlow<LoadState<Unit>> = _signInState.asStateFlow()
 
     init {
+        AppLogger.d("[HomeVM] init called – new ViewModel instance created")
         viewModelScope.launch {
             authUser
                 .filterNotNull()

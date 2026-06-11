@@ -22,6 +22,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.orukunnn.shapesnapapp.app.ShapeSnapColors
+import org.jetbrains.compose.resources.stringResource
+import shapesnapv3.composeapp.generated.resources.Res
+import shapesnapv3.composeapp.generated.resources.appbar_app_name
+import shapesnapv3.composeapp.generated.resources.appbar_storage_format
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -38,20 +43,14 @@ fun ShapeSnapHomeAppBar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Shape Snap",
+                    text = stringResource(Res.string.appbar_app_name),
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
-                val storageInfo = buildString {
-                    append("保存枠")
-                    append(" ")
-                    append(storedPresets)
-                    append("/5")
-                }
                 Text(
-                    text = storageInfo,
+                    text = stringResource(Res.string.appbar_storage_format, storedPresets),
                     style = MaterialTheme.typography.labelSmall,
                 )
                 Spacer(Modifier.size(16.dp))
@@ -82,7 +81,7 @@ fun IconButton(
             Icon(
                 imageVector = imageVector,
                 contentDescription = null,
-                tint = Color(0xFF005D53),
+                tint = ShapeSnapColors.IconTint,
             )
         }
     }
@@ -119,8 +118,8 @@ fun ShapeSnapAppBar(
 private fun ShapeSnapHomeAppBarWithLogoutPreview() {
     ShapeSnapHomeAppBar(
         storedPresets = 3,
-        titleColor = Color(0xFF62BCE7),
-        containerColor = Color.White,
+        titleColor = ShapeSnapColors.Brand,
+        containerColor = ShapeSnapColors.Surface,
     )
 }
 
@@ -130,7 +129,7 @@ private fun ShapeSnapHomeAppBarWithLogoutPreview() {
 private fun ShapeSnapHomeAppBarWithLoginPreview() {
     ShapeSnapHomeAppBar(
         storedPresets = 3,
-        titleColor = Color.White,
-        containerColor = Color(0xFF62BCE7),
+        titleColor = ShapeSnapColors.Surface,
+        containerColor = ShapeSnapColors.Brand,
     )
 }

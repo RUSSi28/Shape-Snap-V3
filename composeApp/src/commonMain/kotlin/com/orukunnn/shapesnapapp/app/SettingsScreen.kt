@@ -24,6 +24,10 @@ import androidx.compose.ui.unit.sp
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
+import shapesnapv3.composeapp.generated.resources.settings_contact
+import shapesnapv3.composeapp.generated.resources.settings_logged_in_account
+import shapesnapv3.composeapp.generated.resources.settings_logout
+import shapesnapv3.composeapp.generated.resources.settings_terms_of_service
 import shapesnapv3.composeapp.generated.resources.settings_title
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,14 +70,14 @@ fun SettingsScreen(
                         )
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                 ) {
-                    Text(text = "ログイン中のアカウント")
+                    Text(text = stringResource(Res.string.settings_logged_in_account))
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(text = address)
                 }
             }
             HorizontalDivider()
             Text(
-                text = "ログアウト",
+                text = stringResource(Res.string.settings_logout),
                 fontSize = 18.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -82,7 +86,7 @@ fun SettingsScreen(
             )
             HorizontalDivider()
             Text(
-                text = "利用規約",
+                text = stringResource(Res.string.settings_terms_of_service),
                 fontSize = 18.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,7 +95,7 @@ fun SettingsScreen(
             )
             HorizontalDivider()
             Text(
-                text = "お問い合わせ",
+                text = stringResource(Res.string.settings_contact),
                 fontSize = 18.sp,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -23,14 +23,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -38,6 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.storage_empty
+import shapesnapv3.composeapp.generated.resources.storage_how_to_apply
 import shapesnapv3.composeapp.generated.resources.storage_remove
 import shapesnapv3.composeapp.generated.resources.storage_saved_title
 
@@ -86,7 +86,7 @@ fun StorageScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "アバターへの適用方法",
+                        text = stringResource(Res.string.storage_how_to_apply),
                         fontSize = 14.sp,
                         modifier = Modifier.padding(12.dp)
                     )
@@ -116,7 +116,7 @@ fun StorageScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(140.dp)
-                                        .background(Color.LightGray)
+                                    .background(ShapeSnapColors.Placeholder)
                                 ) {
                                 }
                             }
