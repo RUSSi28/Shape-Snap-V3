@@ -20,30 +20,26 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainScreenViewModel(
-    private val userProfile: UserProfile?,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val keyValueDatasource: KeyValueDatasource,
 ) : ViewModel() {
-    val sheetUserProfile: StateFlow<UserProfile?> =
-        if (userProfile != null) {
-            MutableStateFlow(userProfile)
-        } else {
-            authRepository.currentUser
-                .flatMapLatest { auth ->
-                    if (auth == null) {
-                        flowOf(null)
-                    } else {
-                        userRepository.observeUser(auth.uid).map { firestore ->
-                            auth.mergeWithFirestore(firestore)
-                        }
+    var userProfile: StateFlow<UserProfile?> =
+        authRepository.currentUser
+            .flatMapLatest { auth ->
+                if (auth == null) {
+                    flowOf(null)
+                } else {
+                    userRepository.observeUser(auth.uid).map { firestore ->
+                        auth.mergeWithFirestore(firestore)
                     }
-                }.stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5_000),
-                    initialValue = null,
-                )
-        }
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = null,
+            )
+        private set
 
     private val _showLogoutConfirmDialog = MutableStateFlow(false)
     val showLogoutConfirmDialog: StateFlow<Boolean> = _showLogoutConfirmDialog.asStateFlow()

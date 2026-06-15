@@ -46,14 +46,7 @@ fun appModule() =
                 userRepository = get(),
             )
         }
-        viewModel<MainScreenViewModel> { (userProfile: UserProfile?) ->
-            MainScreenViewModel(
-                userProfile = userProfile,
-                authRepository = get(),
-                userRepository = get(),
-                keyValueDatasource = get(),
-            )
-        }
+        viewModelOf(::MainScreenViewModel)
         viewModelOf(::PostsScreenViewModel)
         viewModelOf(::StorageScreenViewModel)
         viewModelOf(::LoginViewModel)
