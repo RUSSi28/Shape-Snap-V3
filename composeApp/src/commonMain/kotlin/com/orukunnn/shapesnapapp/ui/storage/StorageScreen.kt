@@ -69,18 +69,17 @@ fun StorageScreen(
                 onArrowBackIconClick = onBackButtonClick,
             )
         },
-    ) { padding ->
+    ) { paddingValues ->
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             state = rememberLazyGridState(),
+            contentPadding = paddingValues,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(vertical = 12.dp, horizontal = 16.dp)
-            ,
-        ) {
+                .padding(horizontal = 16.dp)
+       ) {
             item(span = { GridItemSpan(2) }) {
                 Card(
                     modifier = Modifier.fillMaxWidth()
