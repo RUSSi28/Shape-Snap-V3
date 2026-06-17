@@ -1,6 +1,5 @@
 package com.orukunnn.shapesnapapp.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -183,10 +183,13 @@ private fun HomeScreenContent(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(340.dp),
             state = gridState,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+//            horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier.fillMaxSize()
         ) {
-            item(key = "TrendsHeading") {
+            item(
+                key = "TrendsHeading",
+                span = { GridItemSpan(maxLineSpan) },
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(start = 16.dp, top = 8.dp)
@@ -204,15 +207,21 @@ private fun HomeScreenContent(
                     )
                 }
             }
-            item(key = "TrendItem") {
+            item(
+                key = "TrendItem",
+                span = { GridItemSpan(maxLineSpan) },
+            ) {
                 TrendsLazyRow(
                     presets = presets,
                 )
             }
-            item(key = "PresetsHeading") {
+            item(
+                key = "PresetsHeading",
+                span = { GridItemSpan(maxLineSpan) },
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                 ) {
                     Icon(
                         imageVector = Tabler.Outline.Timeline,
@@ -228,18 +237,14 @@ private fun HomeScreenContent(
                 }
             }
             items(presets, key = { it.id }) { preset ->
-                Column {
-                    if (presets[0].id != preset.id) {
-                        Spacer(Modifier.size(16.dp))
-                    }
-                    PresetItem(
-                        preset = preset,
-                        currentUid = currentUid,
-                        onToggleLike = { onToggleLike(preset.id) },
-                        onSave = { onSave(preset.id) },
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                }
+                PresetItem(
+                    preset = preset,
+                    currentUid = currentUid,
+                    onToggleLike = { onToggleLike(preset.id) },
+                    onSave = { onSave(preset.id) },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                HorizontalDivider(modifier = Modifier.fillMaxWidth())
             }
             if (isLoadingMore) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
@@ -257,7 +262,8 @@ private fun HomeScreenContent(
     }
 }
 
-@Preview
+@Preview(name = "Portrait", widthDp = 360, heightDp = 800)
+@Preview(name = "Landscape", widthDp = 800, heightDp = 360)
 @Composable
 private fun HomeScreenPreview() {
     HomeSuccessScreen(

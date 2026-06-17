@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,100 +51,94 @@ internal fun PresetItem(
     val liked = currentUid != null && currentUid in preset.likedUserIds
     val saved = currentUid != null && currentUid in preset.savedUserIds
 
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(32.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            val url = preset.imageUrl ?: preset.previewImageUrl
-            if (!url.isNullOrBlank()) {
-                AsyncImage(
-                    model = url,
-                    contentDescription = preset.displayName,
-                    modifier =
-                        Modifier
-                            .weight(2f)
-                            .height(250.dp),
-                    contentScale = ContentScale.Crop,
-                )
-            } else {
-                Box(
-                    modifier =
-                        Modifier
-                            .weight(2f)
-                            .height(250.dp),
-                ) {
-                    ColorPainter(Color.Gray)
-                }
-            }
-            Spacer(Modifier.size(16.dp))
-            Column(
-                modifier = Modifier.weight(1.5f)
+        val url = preset.imageUrl ?: preset.previewImageUrl
+        if (!url.isNullOrBlank()) {
+            AsyncImage(
+                model = url,
+                contentDescription = preset.displayName,
+                modifier =
+                    Modifier
+                        .weight(2f)
+                        .height(250.dp),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            Box(
+                modifier =
+                    Modifier
+                        .weight(2f)
+                        .height(250.dp),
             ) {
-                Text(
-                    text = preset.characterTagId,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = ShapeSnapColors.TextSecondary,
-                )
-                Spacer(Modifier.size(8.dp))
-                ShapeSnapButton(
-                    imageVector = Tabler.Filled.Heart,
-                    text = if (liked) {
-                        stringResource(Res.string.preset_liked)
-                    } else {
-                        stringResource(Res.string.preset_like)
-                    },
-                    enabled = !liked,
-                    color = ShapeSnapColors.Accent,
-                    onClick = onToggleLike,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp)
-                )
-                ShapeSnapButton(
-                    imageVector = Tabler.Filled.FileDownload,
-                    text = if (saved) {
-                        stringResource(Res.string.preset_saved)
-                    } else {
-                        stringResource(Res.string.preset_save)
-                    },
-                    enabled = !saved,
-                    color = ShapeSnapColors.Brand,
-                    onClick = onSave,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp)
-                )
-                ShapeSnapButton(
-                    imageVector = Tabler.Outline.Share,
-                    text = stringResource(Res.string.preset_share),
-                    enabled = true,
-                    color = ShapeSnapColors.TextTertiary,
-                    onClick = { },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp)
-                )
-                Spacer(Modifier.size(8.dp))
-                val postedDate = buildString {
-                    append(stringResource(Res.string.home_posted_prefix))
-                    append("\n")
-                    append(
-                        DateFormat.convertShapeSnapDateFormat(
-                            preset.createdAt
-                        )
+                ColorPainter(Color.Gray)
+            }
+        }
+        Spacer(Modifier.size(16.dp))
+        Column(
+            modifier = Modifier.weight(1.5f)
+        ) {
+            Text(
+                text = preset.characterTagId,
+                style = MaterialTheme.typography.titleMedium,
+                color = ShapeSnapColors.TextSecondary,
+            )
+            Spacer(Modifier.size(8.dp))
+            ShapeSnapButton(
+                imageVector = Tabler.Filled.Heart,
+                text = if (liked) {
+                    stringResource(Res.string.preset_liked)
+                } else {
+                    stringResource(Res.string.preset_like)
+                },
+                enabled = !liked,
+                color = ShapeSnapColors.Accent,
+                onClick = onToggleLike,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 16.dp)
+            )
+            ShapeSnapButton(
+                imageVector = Tabler.Filled.FileDownload,
+                text = if (saved) {
+                    stringResource(Res.string.preset_saved)
+                } else {
+                    stringResource(Res.string.preset_save)
+                },
+                enabled = !saved,
+                color = ShapeSnapColors.Brand,
+                onClick = onSave,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 16.dp)
+            )
+            ShapeSnapButton(
+                imageVector = Tabler.Outline.Share,
+                text = stringResource(Res.string.preset_share),
+                enabled = true,
+                color = ShapeSnapColors.TextTertiary,
+                onClick = { },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 16.dp)
+            )
+            Spacer(Modifier.size(8.dp))
+            val postedDate = buildString {
+                append(stringResource(Res.string.home_posted_prefix))
+                append("\n")
+                append(
+                    DateFormat.convertShapeSnapDateFormat(
+                        preset.createdAt
                     )
-                }
-                Text(
-                    text = postedDate,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = ShapeSnapColors.TextTertiary,
                 )
             }
+            Text(
+                text = postedDate,
+                style = MaterialTheme.typography.labelSmall,
+                color = ShapeSnapColors.TextTertiary,
+            )
         }
     }
 }
