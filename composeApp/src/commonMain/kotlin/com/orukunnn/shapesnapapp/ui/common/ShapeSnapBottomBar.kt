@@ -23,23 +23,19 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.orukunnn.shapesnapapp.app.HomeDestination
 import com.orukunnn.shapesnapapp.app.PostsDestination
-import com.orukunnn.shapesnapapp.app.SearchDestination
 import com.orukunnn.shapesnapapp.app.SettingsDestination
 import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.app.StorageDestination
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Filled
-import com.woowla.compose.icon.collections.tabler.tabler.Outline
 import com.woowla.compose.icon.collections.tabler.tabler.filled.FileUpload
 import com.woowla.compose.icon.collections.tabler.tabler.filled.Files
 import com.woowla.compose.icon.collections.tabler.tabler.filled.Home
 import com.woowla.compose.icon.collections.tabler.tabler.filled.Settings
-import com.woowla.compose.icon.collections.tabler.tabler.outline.Search
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.bottom_home
 import shapesnapv3.composeapp.generated.resources.bottom_post
-import shapesnapv3.composeapp.generated.resources.bottom_search
 import shapesnapv3.composeapp.generated.resources.bottom_settings
 import shapesnapv3.composeapp.generated.resources.bottom_storage
 
@@ -60,15 +56,15 @@ fun ShapeSnapBottomBar(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        BottomBarItem(
-            label = stringResource(Res.string.bottom_search),
-            selected =
-                currentDestination?.hierarchy?.any { it.hasRoute(SearchDestination::class) } ==
-                        true,
-            icon = Tabler.Outline.Search,
-            onClick = onNavigateSearch,
-            modifier = Modifier.weight(1f),
-        )
+//        BottomBarItem(
+//            label = stringResource(Res.string.bottom_search),
+//            selected =
+//                currentDestination?.hierarchy?.any { it.hasRoute(SearchDestination::class) } ==
+//                        true,
+//            icon = Tabler.Outline.Search,
+//            onClick = onNavigateSearch,
+//            modifier = Modifier.weight(1f),
+//        )
         BottomBarItem(
             label = stringResource(Res.string.bottom_post),
             selected =
