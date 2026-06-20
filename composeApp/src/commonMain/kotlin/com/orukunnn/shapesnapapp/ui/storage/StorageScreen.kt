@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.orukunnn.shapesnapapp.app.ShapeSnapColors
-import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
+import com.orukunnn.shapesnapapp.ui.common.ShapeSnapRouteAppBar
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import org.jetbrains.compose.resources.stringResource
@@ -44,13 +44,11 @@ import shapesnapv3.composeapp.generated.resources.storage_saved_title
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StorageScreen(
-    onRequestToPopBackStack: () -> Unit,
     viewModel: StorageScreenViewModel = koinViewModel(),
 ) {
     val presets by viewModel.savedPresets.collectAsStateWithLifecycle()
     StorageScreen(
         presets = presets.toPersistentList(),
-        onBackButtonClick = onRequestToPopBackStack,
         onRemoveButtonClick = viewModel::removePreset,
     )
 }
@@ -59,14 +57,12 @@ fun StorageScreen(
 @Composable
 fun StorageScreen(
     presets: ImmutableList<StoredPreset>,
-    onBackButtonClick: () -> Unit,
     onRemoveButtonClick: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
-            ShapeSnapAppBar(
+            ShapeSnapRouteAppBar(
                 title = stringResource(Res.string.storage_saved_title),
-                onArrowBackIconClick = onBackButtonClick,
             )
         },
     ) { paddingValues ->
@@ -142,7 +138,6 @@ private fun StorageScreenPreview() {
             StoredPreset(id = "id2", imageUrl = null),
             StoredPreset(id = "id3", imageUrl = null),
         ).toPersistentList(),
-        onBackButtonClick = {},
         onRemoveButtonClick = {},
     )
 }

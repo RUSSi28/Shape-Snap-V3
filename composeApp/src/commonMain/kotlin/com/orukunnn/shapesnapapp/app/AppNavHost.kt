@@ -1,5 +1,7 @@
 package com.orukunnn.shapesnapapp.app
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -20,28 +22,28 @@ fun AppNavHost(
     NavHost(
         navController = navController,
         startDestination = HomeDestination,
+        enterTransition = { fadeIn() },
+        exitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() },
+        popExitTransition = { fadeOut() },
         modifier = modifier,
     ) {
         composable<HomeDestination> {
+            AppBackHandler(onBack = rememberAppExit())
             HomeScreen(currentUser = userProfile)
         }
         composable<PostsDestination> {
-            PostsScreen(onBack = { navController.popBackStack() })
+            AppBackHandler(onBack = { navController.navigate(HomeDestination) })
+            PostsScreen()
         }
         composable<StorageDestination> {
-            StorageScreen(
-                onRequestToPopBackStack = { navController.popBackStack() },
-            )
-        }
-        composable<SearchDestination> {
-            SearchScreen(
-                onRequestToPopBackStack = { navController.popBackStack() }
-            )
+            AppBackHandler(onBack = { navController.navigate(HomeDestination) })
+            StorageScreen()
         }
         composable<SettingsDestination> {
+            AppBackHandler(onBack = { navController.navigate(HomeDestination) })
             SettingsScreen(
                 address = userProfile.email.orEmpty(),
-                onRequestToPopBackStack = { navController.popBackStack() },
                 onRequestToLogOut = onLogoutClick,
                 onRequestToNavigateToTermsOfService = {
                     navController.navigate(
@@ -51,6 +53,7 @@ fun AppNavHost(
                 onRequestToNavigateToContact = { navController.navigate(ContactDestination) },
             )
         }
+
         composable<TermsOfServiceDestination> {
             TermsOfServiceScreen(
                 onRequestToPopBackStack = { navController.popBackStack() }

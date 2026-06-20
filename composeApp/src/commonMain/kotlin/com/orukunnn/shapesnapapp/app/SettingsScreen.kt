@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
+import com.orukunnn.shapesnapapp.ui.common.ShapeSnapRouteAppBar
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.settings_contact
@@ -34,7 +34,6 @@ import shapesnapv3.composeapp.generated.resources.settings_title
 @Composable
 fun SettingsScreen(
     address: String,
-    onRequestToPopBackStack: () -> Unit,
     onRequestToLogOut: () -> Unit,
     onRequestToNavigateToTermsOfService: () -> Unit,
     onRequestToNavigateToContact: () -> Unit,
@@ -43,10 +42,8 @@ fun SettingsScreen(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0),
         topBar = {
-            ShapeSnapAppBar(
+            ShapeSnapRouteAppBar(
                 title = stringResource(Res.string.settings_title),
-                onArrowBackIconClick = onRequestToPopBackStack,
-                scrollBehavior = null
             )
         },
     ) { innerPadding ->
@@ -112,7 +109,6 @@ fun SettingsScreen(
 private fun SettingsScreenPreview() {
     SettingsScreen(
         address = "address@gmail.com",
-        onRequestToPopBackStack = {},
         onRequestToLogOut = {},
         onRequestToNavigateToTermsOfService = {},
         onRequestToNavigateToContact = {},

@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.orukunnn.shapesnapapp.ui.common.LoadState
-import com.orukunnn.shapesnapapp.ui.common.ShapeSnapAppBar
+import com.orukunnn.shapesnapapp.ui.common.ShapeSnapRouteAppBar
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import shapesnapv3.composeapp.generated.resources.Res
@@ -32,16 +32,14 @@ import shapesnapv3.composeapp.generated.resources.posts_title
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostsScreen(
-    onBack: () -> Unit,
     viewModel: PostsScreenViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
-            ShapeSnapAppBar(
+            ShapeSnapRouteAppBar(
                 title = stringResource(Res.string.posts_title),
-                onArrowBackIconClick = onBack,
             )
         },
     ) { padding ->

@@ -113,6 +113,25 @@ fun ShapeSnapAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShapeSnapRouteAppBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+) {
+    TopAppBar(
+        title = { Text(text = title, style = MaterialTheme.typography.titleLarge) },
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
+        scrollBehavior = scrollBehavior,
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun ShapeSnapHomeAppBarWithLogoutPreview() {
