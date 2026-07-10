@@ -11,13 +11,12 @@ import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import java.util.concurrent.Executors
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.util.concurrent.Executors
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class AndroidCredentialProvider(
     private val applicationContext: Context,
@@ -31,7 +30,9 @@ class AndroidCredentialProvider(
         withContext(Dispatchers.Main) {
             if (webClientId.isBlank()) {
                 return@withContext Result.failure(
-                    IllegalStateException("GOOGLE_WEB_CLIENT_ID が未設定です。gradle.properties などで設定してください。"),
+                    IllegalStateException(
+                        "GOOGLE_WEB_CLIENT_ID が未設定です。",
+                    ),
                 )
             }
             runCatching {

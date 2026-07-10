@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -85,6 +86,21 @@ kotlin {
     }
 }
 
+fun resolveGoogleWebClientId(): String {
+    val fromGradle =
+        (project.findProperty("GOOGLE_WEB_CLIENT_ID") as String?)
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+    if (fromGradle != null) return fromGradle
+
+    val secretsFile = rootProject.file("local.secrets.properties")
+    if (!secretsFile.exists()) return ""
+
+    val props = Properties()
+    secretsFile.inputStream().use { props.load(it) }
+    return props.getProperty("GOOGLE_WEB_CLIENT_ID")?.trim().orEmpty()
+}
+
 android {
     namespace = "com.orukunnn.shapesnapapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -98,7 +114,7 @@ android {
         buildConfigField(
             "String",
             "GOOGLE_WEB_CLIENT_ID",
-            "\"${project.findProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\"",
+            "\"${resolveGoogleWebClientId()}\"",
         )
     }
     packaging {

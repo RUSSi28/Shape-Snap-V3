@@ -224,7 +224,7 @@
   - `idToken`: 取得
   - `accessToken`: `null`（Android CredentialManagerフローでは非提供）
 - `GOOGLE_WEB_CLIENT_ID` を `BuildConfig` 経由で注入
-  - 未設定時は `IllegalStateException`
+  - 未設定時は `IllegalStateException`（詳細はログ出力。UI は管理者問い合わせ文言）
 
 ### 7.3 Android Manifest
 
@@ -355,7 +355,7 @@
 ## 13. 開発・実行時の前提設定
 
 - Android:
-  - `GOOGLE_WEB_CLIENT_ID` を `gradle.properties` 等で設定
+  - `GOOGLE_WEB_CLIENT_ID` を `local.secrets.properties` 等で設定し、`BuildConfig` 経由で注入
   - Firebase設定 (`composeApp/google-services.json`) 配置
 - iOS:
   - `iosApp/GoogleService-Info.plist` 配置
