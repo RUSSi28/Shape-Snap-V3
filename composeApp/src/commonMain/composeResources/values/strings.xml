@@ -18,6 +18,7 @@
     <string name="login_title">ログイン</string>
     <string name="login_google">Googleでログイン</string>
     <string name="login_error">ログインに失敗しました</string>
+    <string name="login_google_unavailable">Googleでログインが使えないため、管理者に問い合わせてください。</string>
     <string name="error_generic">エラーが発生しました</string>
     <string name="platform_label">プラットフォーム: %1$s</string>
     <string name="appbar_free_user">Free User</string>

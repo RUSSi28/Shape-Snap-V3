@@ -29,6 +29,7 @@ import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.login_contact
 import shapesnapv3.composeapp.generated.resources.login_error
 import shapesnapv3.composeapp.generated.resources.login_google
+import shapesnapv3.composeapp.generated.resources.login_google_unavailable
 
 @Composable
 fun LoginScreen(
@@ -114,7 +115,7 @@ private fun LoginSuccessScreenPreview() {
 @Composable
 private fun LoginErrorScreenPreview() {
     LoginScreen(
-        errorMessage = "ネットワークの通信が悪いか、サーバーとの通信に失敗しました。\n 状態が改善しない場合は開発者に問い合わせてください。",
+        errorMessage = stringResource(Res.string.login_google_unavailable),
         onRequestToLogin = {},
         onRequestToContact = {},
     )
