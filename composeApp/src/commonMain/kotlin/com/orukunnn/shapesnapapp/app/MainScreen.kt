@@ -40,7 +40,8 @@ fun MainScreen(
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
-        val isBottomBarVisible = userProfile != null && currentDestination != null
+        val isBottomBarVisible = userProfile != null &&
+            BottomNavDestinationRoutes.any { currentDestination.isOnRoute(it) }
 
         Scaffold(
             bottomBar = {
