@@ -9,6 +9,10 @@ import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.dialog_limit_dismiss
 import shapesnapv3.composeapp.generated.resources.dialog_limit_message
 import shapesnapv3.composeapp.generated.resources.dialog_limit_title
+import shapesnapv3.composeapp.generated.resources.dialog_exit_cancel
+import shapesnapv3.composeapp.generated.resources.dialog_exit_confirm
+import shapesnapv3.composeapp.generated.resources.dialog_exit_message
+import shapesnapv3.composeapp.generated.resources.dialog_exit_title
 import shapesnapv3.composeapp.generated.resources.dialog_logout_cancel
 import shapesnapv3.composeapp.generated.resources.dialog_logout_confirm
 import shapesnapv3.composeapp.generated.resources.dialog_logout_message
@@ -45,6 +49,28 @@ fun LogOutConfirmDialog(
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(Res.string.dialog_logout_cancel))
+            }
+        },
+    )
+}
+
+@Composable
+fun AppExitConfirmDialog(
+    onExitConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.dialog_exit_title)) },
+        text = { Text(stringResource(Res.string.dialog_exit_message)) },
+        confirmButton = {
+            TextButton(onClick = onExitConfirm) {
+                Text(stringResource(Res.string.dialog_exit_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(Res.string.dialog_exit_cancel))
             }
         },
     )

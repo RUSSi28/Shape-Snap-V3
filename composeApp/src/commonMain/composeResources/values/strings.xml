@@ -34,6 +34,12 @@
     <string name="dialog_logout_message">ログアウトしますか？</string>
     <string name="dialog_logout_confirm">ログアウト</string>
     <string name="dialog_logout_cancel">キャンセル</string>
+    <string name="dialog_exit_title">アプリの終了</string>
+    <string name="dialog_exit_message">アプリを終了しますか？</string>
+    <string name="dialog_exit_confirm">終了</string>
+    <string name="dialog_exit_cancel">キャンセル</string>
+    <string name="terms_of_service_title">利用規約</string>
+    <string name="contact_title">お問い合わせ</string>
     <string name="home_posted_prefix">Posted </string>
     <string name="preset_like">Like</string>
     <string name="preset_saved">Saved</string>
