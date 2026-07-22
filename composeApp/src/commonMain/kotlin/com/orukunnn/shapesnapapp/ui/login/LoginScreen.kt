@@ -32,11 +32,13 @@ import shapesnapv3.composeapp.generated.resources.login_google
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = koinViewModel()
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = koinViewModel(),
 ) {
     when (val state = viewModel.state) {
         is LoadState.Loading -> {
             Box(
+                modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
@@ -47,7 +49,8 @@ fun LoginScreen(
             LoginScreen(
                 errorMessage = if (state is LoadState.Error) state.message else "",
                 onRequestToLogin = { viewModel.signInWithGoogle() },
-                onRequestToContact = {}
+                onRequestToContact = {},
+                modifier = modifier,
             )
         }
     }
@@ -58,41 +61,42 @@ private fun LoginScreen(
     errorMessage: String,
     onRequestToLogin: () -> Unit,
     onRequestToContact: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Column(
-        Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        ShapeSnapButton(
-            imageVector = Tabler.Outline.BrandGoogle,
-            text = stringResource(Res.string.login_google),
-            enabled = true,
-            color = ShapeSnapColors.Accent,
-            onClick = onRequestToLogin,
-            modifier = Modifier.fillMaxWidth(),
-            contentDescription = null,
-        )
-        ShapeSnapButton(
-            imageVector = Tabler.Outline.Mail,
-            text = stringResource(Res.string.login_contact),
-            enabled = true,
-            color = ShapeSnapColors.Brand,
-            onClick = onRequestToContact,
-            modifier = Modifier.fillMaxWidth(),
-            contentDescription = null,
-        )
-    }
-    Box(
-        contentAlignment = Alignment.BottomCenter,
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            Modifier.fillMaxSize().padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ShapeSnapButton(
+                imageVector = Tabler.Outline.BrandGoogle,
+                text = stringResource(Res.string.login_google),
+                enabled = true,
+                color = ShapeSnapColors.Accent,
+                onClick = onRequestToLogin,
+                modifier = Modifier.fillMaxWidth(),
+                contentDescription = null,
+            )
+            ShapeSnapButton(
+                imageVector = Tabler.Outline.Mail,
+                text = stringResource(Res.string.login_contact),
+                enabled = true,
+                color = ShapeSnapColors.Brand,
+                onClick = onRequestToContact,
+                modifier = Modifier.fillMaxWidth(),
+                contentDescription = null,
+            )
+        }
         if (errorMessage.isNotEmpty()) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(8.dp),
+            ) {
                 Text(
                     stringResource(Res.string.login_error) + ": $errorMessage",
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(8.dp),
                 )
                 Spacer(Modifier.size(16.dp))
             }

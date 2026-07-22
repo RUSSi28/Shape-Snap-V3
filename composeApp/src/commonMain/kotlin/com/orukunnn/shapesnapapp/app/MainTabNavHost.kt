@@ -13,14 +13,15 @@ import com.orukunnn.shapesnapapp.ui.posts.PostsScreen
 import com.orukunnn.shapesnapapp.ui.storage.StorageScreen
 
 @Composable
-fun AppNavHost(
+fun MainTabNavHost(
     userProfile: UserProfile,
-    navController: NavHostController,
+    tabNavController: NavHostController,
+    rootNavController: NavHostController,
     onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
-        navController = navController,
+        navController = tabNavController,
         startDestination = HomeDestination,
         enterTransition = { fadeIn() },
         exitTransition = { fadeOut() },
@@ -33,35 +34,24 @@ fun AppNavHost(
             HomeScreen(currentUser = userProfile)
         }
         composable<PostsDestination> {
-            AppBackHandler(onBack = { navController.navigate(HomeDestination) })
+            AppBackHandler(onBack = { tabNavController.navigate(HomeDestination) })
             PostsScreen()
         }
         composable<StorageDestination> {
-            AppBackHandler(onBack = { navController.navigate(HomeDestination) })
+            AppBackHandler(onBack = { tabNavController.navigate(HomeDestination) })
             StorageScreen()
         }
         composable<SettingsDestination> {
-            AppBackHandler(onBack = { navController.navigate(HomeDestination) })
+            AppBackHandler(onBack = { tabNavController.navigate(HomeDestination) })
             SettingsScreen(
                 address = userProfile.email.orEmpty(),
                 onRequestToLogOut = onLogoutClick,
                 onRequestToNavigateToTermsOfService = {
-                    navController.navigate(
-                        TermsOfServiceDestination
-                    )
+                    rootNavController.navigate(TermsOfServiceDestination)
                 },
-                onRequestToNavigateToContact = { navController.navigate(ContactDestination) },
-            )
-        }
-
-        composable<TermsOfServiceDestination> {
-            TermsOfServiceScreen(
-                onRequestToPopBackStack = { navController.popBackStack() }
-            )
-        }
-        composable<ContactDestination> {
-            ContactScreen(
-                onRequestToPopBackStack = { navController.popBackStack() }
+                onRequestToNavigateToContact = {
+                    rootNavController.navigate(ContactDestination)
+                },
             )
         }
     }

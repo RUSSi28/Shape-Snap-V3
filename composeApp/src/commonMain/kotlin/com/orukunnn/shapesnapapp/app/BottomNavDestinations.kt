@@ -1,7 +1,6 @@
 package com.orukunnn.shapesnapapp.app
 
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
 
 interface BottomNavDestination
 
@@ -19,11 +18,3 @@ data object SearchDestination : BottomNavDestination
 
 @Serializable
 data object SettingsDestination : BottomNavDestination
-
-val BottomNavDestinationRoutes: List<KClass<out BottomNavDestination>> = listOf(
-    HomeDestination::class,
-    PostsDestination::class,
-    StorageDestination::class,
-    SearchDestination::class,
-    SettingsDestination::class,
-)
