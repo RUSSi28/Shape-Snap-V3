@@ -66,21 +66,21 @@ fun ShapeSnapBottomBar(
 //            modifier = Modifier.weight(1f),
 //        )
         BottomBarItem(
-            label = stringResource(Res.string.bottom_post),
-            selected =
-                currentDestination?.hierarchy?.any { it.hasRoute(PostsDestination::class) } ==
-                        true,
-            icon = Tabler.Filled.FileUpload,
-            onClick = onNavigatePost,
-            modifier = Modifier.weight(1f),
-        )
-        BottomBarItem(
             label = stringResource(Res.string.bottom_home),
             selected =
                 currentDestination?.hierarchy?.any { it.hasRoute(HomeDestination::class) } ==
                         true,
             icon = Tabler.Filled.Home,
             onClick = onNavigateHome,
+            modifier = Modifier.weight(1f),
+        )
+        BottomBarItem(
+            label = stringResource(Res.string.bottom_post),
+            selected =
+                currentDestination?.hierarchy?.any { it.hasRoute(PostsDestination::class) } ==
+                        true,
+            icon = Tabler.Filled.FileUpload,
+            onClick = onNavigatePost,
             modifier = Modifier.weight(1f),
         )
         BottomBarItem(

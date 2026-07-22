@@ -183,7 +183,6 @@ private fun HomeScreenContent(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(340.dp),
             state = gridState,
-//            horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier.fillMaxSize()
         ) {
             item(
@@ -242,7 +241,10 @@ private fun HomeScreenContent(
                     currentUid = currentUid,
                     onToggleLike = { onToggleLike(preset.id) },
                     onSave = { onSave(preset.id) },
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(
+                        vertical = 16.dp,
+                        horizontal = 8.dp
+                    )
                 )
                 HorizontalDivider(modifier = Modifier.fillMaxWidth())
             }

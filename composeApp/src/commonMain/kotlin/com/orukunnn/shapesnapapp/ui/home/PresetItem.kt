@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.orukunnn.shapesnapapp.app.ShapeSnapButton
 import com.orukunnn.shapesnapapp.app.ShapeSnapColors
-import com.orukunnn.shapesnapapp.core.util.DateFormat
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
 import com.woowla.compose.icon.collections.tabler.Tabler
@@ -33,7 +32,6 @@ import com.woowla.compose.icon.collections.tabler.tabler.filled.Heart
 import com.woowla.compose.icon.collections.tabler.tabler.outline.Share
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
-import shapesnapv3.composeapp.generated.resources.home_posted_prefix
 import shapesnapv3.composeapp.generated.resources.preset_like
 import shapesnapv3.composeapp.generated.resources.preset_liked
 import shapesnapv3.composeapp.generated.resources.preset_save
@@ -54,31 +52,38 @@ internal fun PresetItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
+        modifier = modifier
     ) {
         val url = preset.imageUrl ?: preset.previewImageUrl
         if (!url.isNullOrBlank()) {
-            AsyncImage(
-                model = url,
-                contentDescription = preset.displayName,
-                modifier =
-                    Modifier
-                        .weight(2f)
-                        .height(250.dp),
-                contentScale = ContentScale.Crop,
-            )
-        } else {
-            Box(
-                modifier =
-                    Modifier
-                        .weight(2f)
-                        .height(250.dp),
+            Card(
+                shape = RoundedCornerShape(8.dp),
             ) {
-                ColorPainter(Color.Gray)
+                AsyncImage(
+                    model = url,
+                    contentDescription = preset.displayName,
+                    contentScale = ContentScale.Crop,
+                    modifier =
+                        Modifier
+                            .size(160.dp)
+                )
+            }
+        } else {
+            Card(
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Box(
+                    modifier =
+                        Modifier
+                            .size(160.dp)
+                ) {
+                    ColorPainter(Color.Gray)
+                }
             }
         }
         Spacer(Modifier.size(16.dp))
         Column(
-            modifier = Modifier.weight(1.5f)
+            modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = preset.characterTagId,
@@ -98,7 +103,6 @@ internal fun PresetItem(
                 onClick = onToggleLike,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 16.dp)
             )
             ShapeSnapButton(
                 imageVector = Tabler.Filled.FileDownload,
@@ -112,7 +116,6 @@ internal fun PresetItem(
                 onClick = onSave,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 16.dp)
             )
             ShapeSnapButton(
                 imageVector = Tabler.Outline.Share,
@@ -122,28 +125,12 @@ internal fun PresetItem(
                 onClick = { },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 16.dp)
-            )
-            Spacer(Modifier.size(8.dp))
-            val postedDate = buildString {
-                append(stringResource(Res.string.home_posted_prefix))
-                append("\n")
-                append(
-                    DateFormat.convertShapeSnapDateFormat(
-                        preset.createdAt
-                    )
-                )
-            }
-            Text(
-                text = postedDate,
-                style = MaterialTheme.typography.labelSmall,
-                color = ShapeSnapColors.TextTertiary,
             )
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun PresetItemPreview() {
     PresetItem(
