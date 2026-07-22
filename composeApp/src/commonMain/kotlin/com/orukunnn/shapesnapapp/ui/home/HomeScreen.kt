@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -38,7 +36,6 @@ import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.ui.common.LimitReachedDialog
-import com.orukunnn.shapesnapapp.ui.common.ShapeSnapHomeAppBar
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Outline
 import com.woowla.compose.icon.collections.tabler.tabler.outline.Crown
@@ -65,7 +62,6 @@ fun HomeScreen(
     val showLimit by viewModel.showLimitReachedDialog.collectAsStateWithLifecycle()
 
     val uid = currentUser.uid
-    val storedPresets = currentUser.storage.size
 
     when (val state = homeState) {
         HomeUiState.Loading -> {
@@ -82,7 +78,6 @@ fun HomeScreen(
 
         is HomeUiState.Success -> {
             HomeSuccessScreen(
-                storagePresets = storedPresets,
                 presets = state.presets,
                 hasMore = state.hasMore,
                 isLoadingMore = isLoadingMore,
@@ -104,7 +99,6 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeSuccessScreen(
-    storagePresets: Int,
     presets: ImmutableList<Preset>,
     hasMore: Boolean,
     isLoadingMore: Boolean,
@@ -116,37 +110,21 @@ private fun HomeSuccessScreen(
     onSave: (String) -> Unit,
 ) {
     val pullState = rememberPullToRefreshState()
-    Scaffold(
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        state = pullState,
         modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets(0),
-        topBar = {
-            ShapeSnapHomeAppBar(
-                storedPresets = storagePresets,
-                titleColor = ShapeSnapColors.Brand,
-                containerColor = ShapeSnapColors.Surface,
-                scrollBehavior = null,
-            )
-        },
-    ) { innerPadding ->
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = onRefresh,
-            state = pullState,
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-        ) {
-            HomeScreenContent(
-                presets = presets,
-                hasMore = hasMore,
-                isLoadingMore = isLoadingMore,
-                currentUid = currentUid,
-                onLoadMore = onLoadMore,
-                onToggleLike = onToggleLike,
-                onSave = onSave,
-            )
-        }
+    ) {
+        HomeScreenContent(
+            presets = presets,
+            hasMore = hasMore,
+            isLoadingMore = isLoadingMore,
+            currentUid = currentUid,
+            onLoadMore = onLoadMore,
+            onToggleLike = onToggleLike,
+            onSave = onSave,
+        )
     }
 }
 
@@ -269,7 +247,6 @@ private fun HomeScreenContent(
 @Composable
 private fun HomeScreenPreview() {
     HomeSuccessScreen(
-        storagePresets = 3,
         presets = PresetsFactory.createPresets(),
         hasMore = true,
         isLoadingMore = false,
