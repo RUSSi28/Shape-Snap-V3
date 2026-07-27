@@ -242,8 +242,8 @@ private fun HomeScreenContent(
     }
 }
 
-@Preview(name = "Portrait", widthDp = 360, heightDp = 800)
-@Preview(name = "Landscape", widthDp = 800, heightDp = 360)
+@Preview(name = "Portrait", widthDp = 360, heightDp = 800, showBackground = true)
+@Preview(name = "Landscape", widthDp = 800, heightDp = 360, showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
     HomeSuccessScreen(
