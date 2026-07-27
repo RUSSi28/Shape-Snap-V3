@@ -30,7 +30,7 @@ fun MainTabNavHost(
         modifier = modifier,
     ) {
         composable<HomeDestination> {
-            AppBackHandler(onBack = rememberAppExit())
+            AppExitBackHandler()
             HomeScreen(currentUser = userProfile)
         }
         composable<PostsDestination> {
