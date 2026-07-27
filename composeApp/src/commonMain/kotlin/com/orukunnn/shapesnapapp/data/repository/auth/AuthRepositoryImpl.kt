@@ -11,6 +11,9 @@ class AuthRepositoryImpl(
     override val currentUser: Flow<UserProfile?> =
         authDatasource.authState
 
+    override fun currentUserSnapshot(): UserProfile? =
+        authDatasource.currentUserSnapshot()
+
     override suspend fun signInWithGoogleCredentials(
         idToken: String,
         accessToken: String?,

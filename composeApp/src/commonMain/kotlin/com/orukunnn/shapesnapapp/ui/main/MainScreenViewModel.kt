@@ -37,7 +37,7 @@ class MainScreenViewModel(
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = null,
+                initialValue = authRepository.currentUserSnapshot(),
             )
         private set
 
