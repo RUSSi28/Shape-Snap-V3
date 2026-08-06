@@ -7,6 +7,7 @@ data class UserEntity(
     val displayName: String? = null,
     val photoUrl: String? = null,
     val storage: List<String> = emptyList(),
+    val posts: List<String> = emptyList(),
 )
 
 fun UserEntity.toProfile(uid: String) =
@@ -15,4 +16,5 @@ fun UserEntity.toProfile(uid: String) =
         displayName = displayName,
         photoUrl = photoUrl,
         storage = storage,
+        posts = posts,
     )

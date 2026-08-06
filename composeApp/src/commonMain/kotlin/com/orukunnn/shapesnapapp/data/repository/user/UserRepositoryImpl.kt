@@ -21,4 +21,7 @@ class UserRepositoryImpl(
 
     override suspend fun removePresetFromStorage(uid: String, presetId: String): Result<Unit> =
         firestoreDatasource.removePresetFromUserStorage(uid, presetId)
+
+    override suspend fun deletePost(uid: String, presetId: String): Result<Unit> =
+        firestoreDatasource.deleteUserPost(uid, presetId)
 }

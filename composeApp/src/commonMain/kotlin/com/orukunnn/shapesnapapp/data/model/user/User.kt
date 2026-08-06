@@ -9,6 +9,7 @@ data class UserProfile(
     val email: String? = null,
     val photoUrl: String? = null,
     val storage: List<String> = emptyList(),
+    val posts: List<String> = emptyList(),
 )
 
 fun UserProfile.mergeWithFirestore(firestore: UserProfile?): UserProfile {
@@ -17,5 +18,6 @@ fun UserProfile.mergeWithFirestore(firestore: UserProfile?): UserProfile {
         displayName = firestore.displayName ?: displayName,
         photoUrl = firestore.photoUrl ?: photoUrl,
         storage = firestore.storage,
+        posts = firestore.posts,
     )
 }

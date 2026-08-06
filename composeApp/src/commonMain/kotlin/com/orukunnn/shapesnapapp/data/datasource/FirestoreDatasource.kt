@@ -33,6 +33,8 @@ interface FirestoreDatasource {
 
     suspend fun removePresetFromUserStorage(uid: String, presetId: String): Result<Unit>
 
+    suspend fun deleteUserPost(uid: String, presetId: String): Result<Unit>
+
     suspend fun fetchUserPosts(
         uid: String,
         pageSize: Int,

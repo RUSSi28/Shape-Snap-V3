@@ -243,6 +243,27 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
             presetRef.set(PresetEntity.serializer(), presetEntity.copy(savedUserIds = newSaved), merge = true)
         }
 
+    override suspend fun deleteUserPost(uid: String, presetId: String): Result<Unit> =
+        suspendRunCatching {
+            withFirestoreRetry {
+                val presetRef = firestore.collection(COL_PRESETS).document(presetId)
+                presetRef.delete()
+
+                val userRef = firestore.collection(COL_USERS).document(uid)
+                val userSnapshot = userRef.get()
+                if (!userSnapshot.exists) return@withFirestoreRetry
+
+                val userEntity = userSnapshot.data(UserEntity.serializer())
+                userRef.set(
+                    UserEntity.serializer(),
+                    userEntity.copy(posts = userEntity.posts - presetId),
+                    merge = true,
+                )
+            }
+        }.onFailure {
+            AppLogger.w("投稿の削除に失敗 uid=$uid presetId=$presetId", it)
+        }
+
     override suspend fun fetchUserPosts(
         uid: String,
         pageSize: Int,

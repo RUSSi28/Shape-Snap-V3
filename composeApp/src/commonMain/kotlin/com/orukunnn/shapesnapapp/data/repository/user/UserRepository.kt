@@ -17,4 +17,6 @@ interface UserRepository {
     suspend fun addPresetToStorage(uid: String, presetId: String): Result<Unit>
 
     suspend fun removePresetFromStorage(uid: String, presetId: String): Result<Unit>
+
+    suspend fun deletePost(uid: String, presetId: String): Result<Unit>
 }

@@ -10,6 +10,15 @@
     <string name="posts_title">Your Posts</string>
     <string name="posts_load_more">さらに読み込む</string>
     <string name="posts_empty">投稿がありません</string>
+    <string name="posts_like_count">%1$d いいね</string>
+    <string name="posts_save_count">%1$d 保存</string>
+    <string name="posts_unknown_character">未分類</string>
+    <string name="posts_delete">投稿を削除</string>
+    <string name="dialog_delete_post_title">投稿を削除しますか？</string>
+    <string name="dialog_delete_post_message">この投稿は元に戻せません。</string>
+    <string name="dialog_delete_post_confirm">削除</string>
+    <string name="dialog_delete_post_cancel">キャンセル</string>
+    <string name="dialog_delete_post_error">投稿を削除できませんでした。もう一度お試しください。</string>
     <string name="storage_title">ローカル設定</string>
     <string name="storage_hint_key">キー</string>
     <string name="storage_hint_value">値</string>

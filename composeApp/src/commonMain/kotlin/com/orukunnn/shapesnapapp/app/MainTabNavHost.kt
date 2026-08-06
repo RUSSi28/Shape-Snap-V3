@@ -35,7 +35,7 @@ fun MainTabNavHost(
         }
         composable<PostsDestination> {
             AppBackHandler(onBack = { tabNavController.navigate(HomeDestination) })
-            PostsScreen()
+            PostsScreen(currentUser = userProfile)
         }
         composable<StorageDestination> {
             AppBackHandler(onBack = { tabNavController.navigate(HomeDestination) })

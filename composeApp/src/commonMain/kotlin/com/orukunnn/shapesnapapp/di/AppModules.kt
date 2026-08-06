@@ -46,8 +46,14 @@ fun appModule() =
                 userRepository = get(),
             )
         }
+        viewModel<PostsScreenViewModel> { (userId: String) ->
+            PostsScreenViewModel(
+                userId = userId,
+                presetRepository = get(),
+                userRepository = get(),
+            )
+        }
         viewModelOf(::MainScreenViewModel)
-        viewModelOf(::PostsScreenViewModel)
         viewModelOf(::StorageScreenViewModel)
         viewModelOf(::LoginViewModel)
     }
