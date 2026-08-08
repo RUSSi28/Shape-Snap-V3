@@ -12,6 +12,7 @@ import com.orukunnn.shapesnapapp.data.repository.preset.PresetPageCursor
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.app
 import dev.gitlive.firebase.firestore.Direction
+import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.FirebaseFirestoreException
 import dev.gitlive.firebase.firestore.FirestoreExceptionCode
 import dev.gitlive.firebase.firestore.code
@@ -191,13 +192,13 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
             val snapshot = ref.get()
             if (!snapshot.exists) error("preset not found")
             val entity = snapshot.data(PresetEntity.serializer())
-            val newLiked =
+            val likeUpdate =
                 if (uid in entity.likedUserIds) {
-                    entity.likedUserIds - uid
+                    FieldValue.arrayRemove(uid)
                 } else {
-                    entity.likedUserIds + uid
+                    FieldValue.arrayUnion(uid)
                 }
-            ref.set(PresetEntity.serializer(), entity.copy(likedUserIds = newLiked), merge = true)
+            ref.updateFields { (FIELD_LIKED_USER_IDS to likeUpdate) }
         }
 
     override suspend fun addPresetToUserStorage(uid: String, presetId: String): Result<Unit> =
@@ -214,7 +215,11 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
             val storage = userEntity.storage
             if (presetId in storage) return@suspendRunCatching
             val newStorage = storage + presetId
-            userRef.set(UserEntity.serializer(), userEntity.copy(storage = newStorage), merge = true)
+            userRef.set(
+                UserEntity.serializer(),
+                userEntity.copy(storage = newStorage),
+                merge = true
+            )
             val presetSnap = presetRef.get()
             if (!presetSnap.exists) error("preset not found")
             val presetEntity = presetSnap.data(PresetEntity.serializer())
@@ -224,7 +229,11 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
                 } else {
                     presetEntity.savedUserIds + uid
                 }
-            presetRef.set(PresetEntity.serializer(), presetEntity.copy(savedUserIds = newSaved), merge = true)
+            presetRef.set(
+                PresetEntity.serializer(),
+                presetEntity.copy(savedUserIds = newSaved),
+                merge = true
+            )
         }
 
     override suspend fun removePresetFromUserStorage(uid: String, presetId: String): Result<Unit> =
@@ -235,12 +244,20 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
             if (!userSnap.exists) return@suspendRunCatching
             val userEntity = userSnap.data(UserEntity.serializer())
             val newStorage = userEntity.storage - presetId
-            userRef.set(UserEntity.serializer(), userEntity.copy(storage = newStorage), merge = true)
+            userRef.set(
+                UserEntity.serializer(),
+                userEntity.copy(storage = newStorage),
+                merge = true
+            )
             val presetSnap = presetRef.get()
             if (!presetSnap.exists) return@suspendRunCatching
             val presetEntity = presetSnap.data(PresetEntity.serializer())
             val newSaved = presetEntity.savedUserIds - uid
-            presetRef.set(PresetEntity.serializer(), presetEntity.copy(savedUserIds = newSaved), merge = true)
+            presetRef.set(
+                PresetEntity.serializer(),
+                presetEntity.copy(savedUserIds = newSaved),
+                merge = true
+            )
         }
 
     override suspend fun deleteUserPost(uid: String, presetId: String): Result<Unit> =
@@ -312,6 +329,7 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
         private const val COL_PRESETS = "presets"
         private const val COL_USERS = "users"
         private const val COL_POSTS = "posts"
+        private const val FIELD_LIKED_USER_IDS = "likedUserIds"
         private const val FIELD_CREATED_AT = "createdAt"
         private const val FIELD_CREATED_AT_EPOCH_SECONDS = "createdAtEpochSeconds"
     }
