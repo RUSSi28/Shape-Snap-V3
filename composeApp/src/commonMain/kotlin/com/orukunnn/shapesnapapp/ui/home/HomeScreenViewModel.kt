@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -50,17 +49,17 @@ class HomeScreenViewModel(
             )
 
 
-    private val _isLoadingMore = MutableStateFlow(false)
-    val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
+    val isLoadingMore: StateFlow<Boolean>
+        field = MutableStateFlow(false)
 
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+    val isRefreshing: StateFlow<Boolean>
+        field = MutableStateFlow(false)
 
-    private val _showLimitReachedDialog = MutableStateFlow(false)
-    val showLimitReachedDialog: StateFlow<Boolean> = _showLimitReachedDialog.asStateFlow()
+    val showLimitReachedDialog: StateFlow<Boolean>
+        field = MutableStateFlow(false)
 
-    private val _signInState = MutableStateFlow<LoadState<Unit>>(LoadState.Idle)
-    val signInState: StateFlow<LoadState<Unit>> = _signInState.asStateFlow()
+    val signInState: StateFlow<LoadState<Unit>>
+        field = MutableStateFlow<LoadState<Unit>>(LoadState.Idle)
 
     fun loadMore() {
         // スナップショットで一覧をまとめて受け取るため追加ページはなし
@@ -68,9 +67,9 @@ class HomeScreenViewModel(
 
     fun refreshPresets() {
         viewModelScope.launch {
-            _isRefreshing.value = true
+            isRefreshing.value = true
             delay(300)
-            _isRefreshing.value = false
+            isRefreshing.value = false
         }
     }
 
@@ -106,7 +105,7 @@ class HomeScreenViewModel(
                 return@launch
             }
             if (userProfile.storage.size >= FREE_LIMIT) {
-                _showLimitReachedDialog.value = true
+                showLimitReachedDialog.value = true
                 return@launch
             }
             userRepository
@@ -121,7 +120,7 @@ class HomeScreenViewModel(
     }
 
     fun dismissLimitDialog() {
-        _showLimitReachedDialog.value = false
+        showLimitReachedDialog.value = false
     }
 
     companion object {

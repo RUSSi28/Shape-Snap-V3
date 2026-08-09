@@ -9,7 +9,6 @@ import com.orukunnn.shapesnapapp.ui.common.LoadState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -19,14 +18,14 @@ class PostsScreenViewModel(
     presetRepository: PresetRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
-    private val _postPendingDeletion = MutableStateFlow<Preset?>(null)
-    val postPendingDeletion: StateFlow<Preset?> = _postPendingDeletion.asStateFlow()
+    val postPendingDeletion: StateFlow<Preset?>
+        field = MutableStateFlow<Preset?>(null)
 
-    private val _isDeleting = MutableStateFlow(false)
-    val isDeleting: StateFlow<Boolean> = _isDeleting.asStateFlow()
+    val isDeleting: StateFlow<Boolean>
+        field = MutableStateFlow(false)
 
-    private val _deleteFailed = MutableStateFlow(false)
-    val deleteFailed: StateFlow<Boolean> = _deleteFailed.asStateFlow()
+    val deleteFailed: StateFlow<Boolean>
+        field = MutableStateFlow(false)
 
     val state: StateFlow<LoadState<List<Preset>>> =
         combine(
@@ -48,29 +47,29 @@ class PostsScreenViewModel(
         )
 
     fun requestPostDeletion(preset: Preset) {
-        _deleteFailed.value = false
-        _postPendingDeletion.value = preset
+        deleteFailed.value = false
+        postPendingDeletion.value = preset
     }
 
     fun dismissPostDeletion() {
-        if (_isDeleting.value) return
-        _deleteFailed.value = false
-        _postPendingDeletion.value = null
+        if (isDeleting.value) return
+        deleteFailed.value = false
+        postPendingDeletion.value = null
     }
 
     fun confirmPostDeletion() {
-        val preset = _postPendingDeletion.value ?: return
-        if (_isDeleting.value) return
+        val preset = postPendingDeletion.value ?: return
+        if (isDeleting.value) return
 
         viewModelScope.launch {
-            _isDeleting.value = true
-            _deleteFailed.value = false
+            isDeleting.value = true
+            deleteFailed.value = false
             val result = userRepository.deletePost(userId, preset.id)
-            _isDeleting.value = false
+            isDeleting.value = false
             if (result.isSuccess) {
-                _postPendingDeletion.value = null
+                postPendingDeletion.value = null
             } else {
-                _deleteFailed.value = true
+                deleteFailed.value = true
             }
         }
     }
