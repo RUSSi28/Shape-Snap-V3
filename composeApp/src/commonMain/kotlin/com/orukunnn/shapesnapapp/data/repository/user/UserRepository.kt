@@ -12,11 +12,13 @@ interface UserRepository {
         photoUrl: String?,
     ): Result<Unit>
 
-    suspend fun togglePresetLike(presetId: String, uid: String): Result<Unit>
+    suspend fun likePreset(presetId: String, uid: String): Result<Unit>
 
-    suspend fun addPresetToStorage(uid: String, presetId: String): Result<Unit>
+    suspend fun unlikePreset(presetId: String, uid: String): Result<Unit>
 
-    suspend fun removePresetFromStorage(uid: String, presetId: String): Result<Unit>
+    suspend fun savePresetForUser(uid: String, presetId: String): Result<Unit>
+
+    suspend fun unsavePresetForUser(uid: String, presetId: String): Result<Unit>
 
     suspend fun deletePost(uid: String, presetId: String): Result<Unit>
 }

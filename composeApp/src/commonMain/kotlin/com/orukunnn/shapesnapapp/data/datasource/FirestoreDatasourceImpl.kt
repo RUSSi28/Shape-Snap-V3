@@ -186,25 +186,21 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
             }
         }.onFailure { AppLogger.w("ensureUserDocument failed uid=$uid", it) }
 
-    override suspend fun togglePresetLike(presetId: String, uid: String): Result<Unit> =
+    override suspend fun addLikedUserIdToPresetStorage(presetId: String, uid: String): Result<Unit> =
         suspendRunCatching {
             val ref = firestore.collection(COL_PRESETS).document(presetId)
-            val snapshot = ref.get()
-            if (!snapshot.exists) error("preset not found")
-            val entity = snapshot.data(PresetEntity.serializer())
-            val likeUpdate =
-                if (uid in entity.likedUserIds) {
-                    FieldValue.arrayRemove(uid)
-                } else {
-                    FieldValue.arrayUnion(uid)
-                }
-            ref.updateFields { (FIELD_LIKED_USER_IDS to likeUpdate) }
+            ref.updateFields { (FIELD_LIKED_USER_IDS to FieldValue.arrayUnion(uid)) }
         }
 
-    override suspend fun addPresetToUserStorage(uid: String, presetId: String): Result<Unit> =
+    override suspend fun removeLikedUserIdFromPresetStorage(presetId: String, uid: String): Result<Unit> =
+        suspendRunCatching {
+            val ref = firestore.collection(COL_PRESETS).document(presetId)
+            ref.updateFields { (FIELD_LIKED_USER_IDS to FieldValue.arrayRemove(uid)) }
+        }
+
+    override suspend fun addPresetIdToUserStorage(uid: String, presetId: String): Result<Unit> =
         suspendRunCatching {
             val userRef = firestore.collection(COL_USERS).document(uid)
-            val presetRef = firestore.collection(COL_PRESETS).document(presetId)
             val userSnap = userRef.get()
             val userEntity =
                 if (userSnap.exists) {
@@ -220,6 +216,25 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
                 userEntity.copy(storage = newStorage),
                 merge = true
             )
+        }
+
+    override suspend fun removePresetIdFromUserStorage(uid: String, presetId: String): Result<Unit> =
+        suspendRunCatching {
+            val userRef = firestore.collection(COL_USERS).document(uid)
+            val userSnap = userRef.get()
+            if (!userSnap.exists) return@suspendRunCatching
+            val userEntity = userSnap.data(UserEntity.serializer())
+            val newStorage = userEntity.storage - presetId
+            userRef.set(
+                UserEntity.serializer(),
+                userEntity.copy(storage = newStorage),
+                merge = true
+            )
+        }
+
+    override suspend fun addUserIdToPresetSavedUsers(presetId: String, uid: String): Result<Unit> =
+        suspendRunCatching {
+            val presetRef = firestore.collection(COL_PRESETS).document(presetId)
             val presetSnap = presetRef.get()
             if (!presetSnap.exists) error("preset not found")
             val presetEntity = presetSnap.data(PresetEntity.serializer())
@@ -236,27 +251,16 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
             )
         }
 
-    override suspend fun removePresetFromUserStorage(uid: String, presetId: String): Result<Unit> =
+    override suspend fun removeUserIdFromPresetSavedUsers(presetId: String, uid: String): Result<Unit> =
         suspendRunCatching {
-            val userRef = firestore.collection(COL_USERS).document(uid)
             val presetRef = firestore.collection(COL_PRESETS).document(presetId)
-            val userSnap = userRef.get()
-            if (!userSnap.exists) return@suspendRunCatching
-            val userEntity = userSnap.data(UserEntity.serializer())
-            val newStorage = userEntity.storage - presetId
-            userRef.set(
-                UserEntity.serializer(),
-                userEntity.copy(storage = newStorage),
-                merge = true
-            )
             val presetSnap = presetRef.get()
             if (!presetSnap.exists) return@suspendRunCatching
             val presetEntity = presetSnap.data(PresetEntity.serializer())
-            val newSaved = presetEntity.savedUserIds - uid
             presetRef.set(
                 PresetEntity.serializer(),
-                presetEntity.copy(savedUserIds = newSaved),
-                merge = true
+                presetEntity.copy(savedUserIds = presetEntity.savedUserIds - uid),
+                merge = true,
             )
         }
 

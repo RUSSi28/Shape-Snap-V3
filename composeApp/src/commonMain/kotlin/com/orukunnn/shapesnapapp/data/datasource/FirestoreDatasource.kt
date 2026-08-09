@@ -27,11 +27,17 @@ interface FirestoreDatasource {
         photoUrl: String?,
     ): Result<Unit>
 
-    suspend fun togglePresetLike(presetId: String, uid: String): Result<Unit>
+    suspend fun addLikedUserIdToPresetStorage(presetId: String, uid: String): Result<Unit>
 
-    suspend fun addPresetToUserStorage(uid: String, presetId: String): Result<Unit>
+    suspend fun removeLikedUserIdFromPresetStorage(presetId: String, uid: String): Result<Unit>
 
-    suspend fun removePresetFromUserStorage(uid: String, presetId: String): Result<Unit>
+    suspend fun addPresetIdToUserStorage(uid: String, presetId: String): Result<Unit>
+
+    suspend fun removePresetIdFromUserStorage(uid: String, presetId: String): Result<Unit>
+
+    suspend fun addUserIdToPresetSavedUsers(presetId: String, uid: String): Result<Unit>
+
+    suspend fun removeUserIdFromPresetSavedUsers(presetId: String, uid: String): Result<Unit>
 
     suspend fun deleteUserPost(uid: String, presetId: String): Result<Unit>
 

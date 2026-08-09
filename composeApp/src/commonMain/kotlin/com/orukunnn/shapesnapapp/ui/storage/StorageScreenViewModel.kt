@@ -1,11 +1,11 @@
 package com.orukunnn.shapesnapapp.ui.storage
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import androidx.lifecycle.viewModelScope
 import com.orukunnn.shapesnapapp.data.repository.auth.AuthRepository
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetRepository
 import com.orukunnn.shapesnapapp.data.repository.user.UserRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -62,7 +62,7 @@ class StorageScreenViewModel(
     fun removePreset(presetId: String) {
         viewModelScope.launch {
             val uid = authRepository.currentUser.filterNotNull().first().uid
-            userRepository.removePresetFromStorage(uid, presetId)
+            userRepository.unsavePresetForUser(uid, presetId)
         }
     }
 }

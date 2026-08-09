@@ -82,8 +82,13 @@ class HomeScreenViewModel(
                     ?.likedUserIds
                     ?.contains(userProfile.uid)
                     ?: false
-            userRepository
-                .togglePresetLike(presetId, userProfile.uid)
+            val updateLike =
+                if (isAlreadyLiked) {
+                    userRepository.unlikePreset(presetId, userProfile.uid)
+                } else {
+                    userRepository.likePreset(presetId, userProfile.uid)
+                }
+            updateLike
                 .onSuccess {
                     eventLogger.logPresetLike(
                         userId = userProfile.uid,
@@ -96,13 +101,16 @@ class HomeScreenViewModel(
 
     fun toggleSave(presetId: String) {
         viewModelScope.launch {
-            if (presetId in userProfile.storage) return@launch
+            if (presetId in userProfile.storage) {
+                userRepository.unsavePresetForUser(userProfile.uid, presetId)
+                return@launch
+            }
             if (userProfile.storage.size >= FREE_LIMIT) {
                 _showLimitReachedDialog.value = true
                 return@launch
             }
             userRepository
-                .addPresetToStorage(userProfile.uid, presetId)
+                .savePresetForUser(userProfile.uid, presetId)
                 .onSuccess {
                     eventLogger.logPresetSave(
                         userId = userProfile.uid,
