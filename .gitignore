@@ -3,10 +3,12 @@
 .gradle
 .gradle/
 .gradle-local/
+docs/
 **/build/
 xcuserdata
 !src/**/build/
 local.properties
+local.secrets.properties
 .idea
 .idea/
 .DS_Store
