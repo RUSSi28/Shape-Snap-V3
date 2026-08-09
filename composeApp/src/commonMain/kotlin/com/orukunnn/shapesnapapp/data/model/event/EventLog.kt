@@ -5,9 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class EventType {
-    @SerialName("preset_impression")
-    PRESET_IMPRESSION,
-
     @SerialName("preset_like")
     PRESET_LIKE,
 
@@ -30,5 +27,4 @@ data class EventLog(
     val platform: String,
     val appVersion: String,
     val sessionId: String,
-    val rank: Int? = null,
 )

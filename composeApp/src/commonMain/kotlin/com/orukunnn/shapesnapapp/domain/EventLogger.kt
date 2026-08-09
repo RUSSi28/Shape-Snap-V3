@@ -16,15 +16,6 @@ class EventLogger(
 ) {
     private val sessionId =
         "${Clock.System.now().epochSeconds}-${Random.nextLong().toString(16)}"
-    private val impressionedPresetIds = mutableSetOf<String>()
-
-    fun logPresetImpression(
-        userId: String,
-        presetId: String,
-    ) {
-        if (!impressionedPresetIds.add(presetId)) return
-        log(userId, presetId, EventType.PRESET_IMPRESSION)
-    }
 
     fun logPresetLike(
         userId: String,
@@ -55,6 +46,16 @@ class EventLogger(
             return
         }
         scope.launch {
+            val event = EventLog(
+                userId = userId,
+                eventType = eventType,
+                presetId = presetId,
+                occurredAtEpochSeconds = Clock.System.now().epochSeconds,
+                platform = Platform.name.substringBefore(' ').lowercase(),
+                appVersion = APP_VERSION,
+                sessionId = sessionId,
+            )
+            AppLogger.d("イベントログ: $event")
             eventDatasource
                 .logEvent(
                     EventLog(

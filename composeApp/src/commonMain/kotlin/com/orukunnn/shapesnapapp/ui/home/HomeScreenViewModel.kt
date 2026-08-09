@@ -112,10 +112,6 @@ class HomeScreenViewModel(
         }
     }
 
-    fun logPresetImpression(presetId: String) {
-        eventLogger.logPresetImpression(userProfile.uid, presetId)
-    }
-
     fun dismissLimitDialog() {
         _showLimitReachedDialog.value = false
     }
