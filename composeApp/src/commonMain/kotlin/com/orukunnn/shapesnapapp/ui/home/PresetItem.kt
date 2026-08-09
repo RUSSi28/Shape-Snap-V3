@@ -12,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +31,7 @@ import com.woowla.compose.icon.collections.tabler.tabler.Outline
 import com.woowla.compose.icon.collections.tabler.tabler.filled.FileDownload
 import com.woowla.compose.icon.collections.tabler.tabler.filled.Heart
 import com.woowla.compose.icon.collections.tabler.tabler.outline.Share
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import shapesnapv3.composeapp.generated.resources.Res
 import shapesnapv3.composeapp.generated.resources.preset_like
@@ -44,10 +46,16 @@ internal fun PresetItem(
     currentUid: String?,
     onToggleLike: () -> Unit,
     onSave: () -> Unit,
+    onImpression: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val liked = currentUid != null && currentUid in preset.likedUserIds
     val saved = currentUid != null && currentUid in preset.savedUserIds
+
+    LaunchedEffect(preset.id) {
+        delay(IMPRESSION_DELAY_MILLIS)
+        onImpression()
+    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -138,5 +146,8 @@ private fun PresetItemPreview() {
         currentUid = "",
         onToggleLike = {},
         onSave = {},
+        onImpression = {},
     )
 }
+
+private const val IMPRESSION_DELAY_MILLIS = 500L

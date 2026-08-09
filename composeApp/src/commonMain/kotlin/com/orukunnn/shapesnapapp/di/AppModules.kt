@@ -49,6 +49,7 @@ fun appModule() =
                 userProfile = userProfile,
                 presetRepository = get(),
                 userRepository = get(),
+                eventLogger = get(),
             )
         }
         viewModel<PostsScreenViewModel> { (userId: String) ->

@@ -6,6 +6,7 @@ import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetRepository
 import com.orukunnn.shapesnapapp.data.repository.user.UserRepository
+import com.orukunnn.shapesnapapp.domain.EventLogger
 import com.orukunnn.shapesnapapp.ui.common.LoadState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -37,6 +38,7 @@ class HomeScreenViewModel(
     private val userProfile: UserProfile,
     private val presetRepository: PresetRepository,
     private val userRepository: UserRepository,
+    private val eventLogger: EventLogger,
 ) : ViewModel() {
     val homeState: StateFlow<HomeUiState> =
         presetRepository.presets
@@ -74,7 +76,21 @@ class HomeScreenViewModel(
 
     fun toggleLike(presetId: String) {
         viewModelScope.launch {
-            userRepository.togglePresetLike(presetId, userProfile.uid)
+            val isAlreadyLiked =
+                presetRepository.presets.value
+                    ?.firstOrNull { it.id == presetId }
+                    ?.likedUserIds
+                    ?.contains(userProfile.uid)
+                    ?: false
+            userRepository
+                .togglePresetLike(presetId, userProfile.uid)
+                .onSuccess {
+                    eventLogger.logPresetLike(
+                        userId = userProfile.uid,
+                        presetId = presetId,
+                        isLike = !isAlreadyLiked,
+                    )
+                }
         }
     }
 
@@ -85,8 +101,19 @@ class HomeScreenViewModel(
                 _showLimitReachedDialog.value = true
                 return@launch
             }
-            userRepository.addPresetToStorage(userProfile.uid, presetId)
+            userRepository
+                .addPresetToStorage(userProfile.uid, presetId)
+                .onSuccess {
+                    eventLogger.logPresetSave(
+                        userId = userProfile.uid,
+                        presetId = presetId,
+                    )
+                }
         }
+    }
+
+    fun logPresetImpression(presetId: String) {
+        eventLogger.logPresetImpression(userProfile.uid, presetId)
     }
 
     fun dismissLimitDialog() {

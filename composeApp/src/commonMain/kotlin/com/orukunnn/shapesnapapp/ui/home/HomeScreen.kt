@@ -87,6 +87,7 @@ fun HomeScreen(
                 onRefresh = { viewModel.refreshPresets() },
                 onToggleLike = { viewModel.toggleLike(it) },
                 onSave = { viewModel.saveToStorage(it) },
+                onImpression = { viewModel.logPresetImpression(it) },
             )
         }
     }
@@ -108,6 +109,7 @@ private fun HomeSuccessScreen(
     onRefresh: () -> Unit,
     onToggleLike: (String) -> Unit,
     onSave: (String) -> Unit,
+    onImpression: (String) -> Unit,
 ) {
     val pullState = rememberPullToRefreshState()
     PullToRefreshBox(
@@ -124,6 +126,7 @@ private fun HomeSuccessScreen(
             onLoadMore = onLoadMore,
             onToggleLike = onToggleLike,
             onSave = onSave,
+            onImpression = onImpression,
         )
     }
 }
@@ -137,6 +140,7 @@ private fun HomeScreenContent(
     onLoadMore: () -> Unit,
     onToggleLike: (String) -> Unit,
     onSave: (String) -> Unit,
+    onImpression: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val gridState = rememberLazyGridState()
@@ -219,6 +223,7 @@ private fun HomeScreenContent(
                     currentUid = currentUid,
                     onToggleLike = { onToggleLike(preset.id) },
                     onSave = { onSave(preset.id) },
+                    onImpression = { onImpression(preset.id) },
                     modifier = Modifier.padding(
                         vertical = 16.dp,
                         horizontal = 8.dp
@@ -256,5 +261,6 @@ private fun HomeScreenPreview() {
         onRefresh = {},
         onToggleLike = {},
         onSave = {},
+        onImpression = {},
     )
 }
