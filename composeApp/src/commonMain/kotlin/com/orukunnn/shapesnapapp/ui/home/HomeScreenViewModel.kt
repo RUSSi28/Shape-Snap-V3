@@ -94,7 +94,7 @@ class HomeScreenViewModel(
         }
     }
 
-    fun saveToStorage(presetId: String) {
+    fun toggleSave(presetId: String) {
         viewModelScope.launch {
             if (presetId in userProfile.storage) return@launch
             if (userProfile.storage.size >= FREE_LIMIT) {

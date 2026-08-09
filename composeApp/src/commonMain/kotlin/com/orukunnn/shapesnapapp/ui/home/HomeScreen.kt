@@ -86,7 +86,7 @@ fun HomeScreen(
                 onLoadMore = { viewModel.loadMore() },
                 onRefresh = { viewModel.refreshPresets() },
                 onToggleLike = { viewModel.toggleLike(it) },
-                onSave = { viewModel.saveToStorage(it) },
+                onSave = { viewModel.toggleSave(it) },
             )
         }
     }
