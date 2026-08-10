@@ -98,8 +98,12 @@ internal fun PresetItem(
                 } else {
                     stringResource(Res.string.preset_like)
                 },
-                enabled = !liked,
-                color = ShapeSnapColors.Accent,
+                enabled = true,
+                color = if (liked) {
+                    ShapeSnapColors.Accent
+                } else {
+                    ShapeSnapColors.TextTertiary
+                },
                 onClick = onToggleLike,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,8 +115,12 @@ internal fun PresetItem(
                 } else {
                     stringResource(Res.string.preset_save)
                 },
-                enabled = !saved,
-                color = ShapeSnapColors.Brand,
+                enabled = true,
+                color = if (saved) {
+                    ShapeSnapColors.Brand
+                } else {
+                    ShapeSnapColors.TextTertiary
+                },
                 onClick = onSave,
                 modifier = Modifier
                     .fillMaxWidth()
