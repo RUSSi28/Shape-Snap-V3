@@ -132,7 +132,7 @@ class HomeScreenViewModel(
                     HomeUiState.Loading
                 else ->
                     HomeUiState.Success(
-                        presets = sortedByDescending { it.id }.toPersistentList(),
+                        presets = sortedByDescending { it.createdAt }.toPersistentList(),
                         hasMore = false,
                     )
             }

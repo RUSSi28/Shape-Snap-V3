@@ -1,6 +1,7 @@
 package com.orukunnn.shapesnapapp.data.model.preset
 
 
+import dev.gitlive.firebase.firestore.Timestamp
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 
@@ -15,17 +16,15 @@ data class PresetEntity(
     val likedUserIds: List<String> = emptyList(),
     val savedUserIds: List<String> = emptyList(),
     val blendShapeWeights: Map<String, Double> = emptyMap(),
+    val createdAt: Timestamp? = null,
+    /** 旧フィールド。新規データは [createdAt] を使う。 */
     val createdAtEpochSeconds: Long? = null,
 )
 
 fun PresetEntity.toPreset(documentId: String): Preset {
     val dn = displayName.ifBlank { name }
     val img = imageUrl ?: previewImageUrl
-    val created =
-        Instant.fromEpochSeconds(
-            createdAtEpochSeconds ?: 0,
-            0,
-        )
+    val created = resolveCreatedAt()
     return Preset(
         id = documentId,
         displayName = dn,
@@ -37,4 +36,12 @@ fun PresetEntity.toPreset(documentId: String): Preset {
         savedUserIds = savedUserIds,
         blendShapeWeights = blendShapeWeights,
     )
+}
+
+internal fun PresetEntity.resolveCreatedAt(): Instant {
+    val timestamp = createdAt
+    if (timestamp != null) {
+        return Instant.fromEpochSeconds(timestamp.seconds, timestamp.nanoseconds.toLong())
+    }
+    return Instant.fromEpochSeconds(createdAtEpochSeconds ?: 0, 0)
 }

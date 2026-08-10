@@ -107,13 +107,11 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
     ): Result<Pair<List<Preset>, PresetPageCursor?>> =
         suspendRunCatching {
             withFirestoreRetry {
-                // 注意: `__name__`(ドキュメント ID) の DESC は自動インデックスの対象外で
-                // FAILED_PRECONDITION になるため、単一フィールドの index が自動作成される
-                // `createdAtEpochSeconds` の DESC でページングする。
+                // 実データは Timestamp 型の `createdAt` を持つため、それで DESC ページングする。
                 val base =
                     firestore
                         .collection(COL_PRESETS)
-                        .orderBy(FIELD_CREATED_AT_EPOCH_SECONDS, Direction.DESCENDING)
+                        .orderBy(FIELD_CREATED_AT, Direction.DESCENDING)
                         .limit(pageSize.toLong())
                 val query =
                     if (cursor != null) {
@@ -335,6 +333,5 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
         private const val COL_POSTS = "posts"
         private const val FIELD_LIKED_USER_IDS = "likedUserIds"
         private const val FIELD_CREATED_AT = "createdAt"
-        private const val FIELD_CREATED_AT_EPOCH_SECONDS = "createdAtEpochSeconds"
     }
 }
