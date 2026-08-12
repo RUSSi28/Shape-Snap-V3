@@ -22,6 +22,7 @@ import com.orukunnn.shapesnapapp.ui.home.HomeScreenViewModel
 import com.orukunnn.shapesnapapp.ui.login.LoginViewModel
 import com.orukunnn.shapesnapapp.ui.main.MainScreenViewModel
 import com.orukunnn.shapesnapapp.ui.posts.PostsScreenViewModel
+import com.orukunnn.shapesnapapp.ui.preset.PresetDetailViewModel
 import com.orukunnn.shapesnapapp.ui.storage.StorageScreenViewModel
 import com.russhwolf.settings.Settings
 import kotlinx.coroutines.CoroutineScope
@@ -57,6 +58,15 @@ fun appModule() =
                 userId = userId,
                 presetRepository = get(),
                 userRepository = get(),
+            )
+        }
+        viewModel<PresetDetailViewModel> { (presetId: String, userProfile: UserProfile) ->
+            PresetDetailViewModel(
+                presetId = presetId,
+                userProfile = userProfile,
+                presetRepository = get(),
+                userRepository = get(),
+                eventLogger = get(),
             )
         }
         viewModelOf(::MainScreenViewModel)

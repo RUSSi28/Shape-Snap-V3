@@ -31,11 +31,12 @@ fun RootNavHost(
         val current = rootNavController.currentBackStackEntry?.destination
         val onLogin = current?.hasRoute<LoginDestination>() == true
         val onMain = current.isOnRoute(MainDestination::class)
+        val onPresetDetail = current.isOnRoute(PresetDetailDestination::class)
         val onSub = current.isOnRoute(TermsOfServiceDestination::class) ||
             current.isOnRoute(ContactDestination::class)
 
         when {
-            isLoggedIn && !onMain && !onSub -> {
+            isLoggedIn && !onMain && !onPresetDetail && !onSub -> {
                 rootNavController.navigate(MainDestination) {
                     popUpTo(LoginDestination) { inclusive = true }
                     launchSingleTop = true
@@ -64,6 +65,7 @@ fun RootNavHost(
                 rootNavController = rootNavController,
                 onLogoutClick = mainViewModel::requestLogoutConfirmation,
             )
+            presetDetailNavGraph(rootNavController = rootNavController)
             subNavGraph(rootNavController = rootNavController)
         }
     }

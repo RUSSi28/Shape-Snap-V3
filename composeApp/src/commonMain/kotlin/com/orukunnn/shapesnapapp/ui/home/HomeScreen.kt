@@ -54,6 +54,7 @@ import shapesnapv3.composeapp.generated.resources.home_section_trends
 @Composable
 fun HomeScreen(
     currentUser: UserProfile,
+    onNavigateToPresetDetail: (String) -> Unit,
     viewModel: HomeScreenViewModel = koinViewModel { parametersOf(currentUser) },
 ) {
     val homeState by viewModel.homeState.collectAsStateWithLifecycle()
@@ -87,6 +88,7 @@ fun HomeScreen(
                 onRefresh = { viewModel.refreshPresets() },
                 onToggleLike = { viewModel.toggleLike(it) },
                 onSave = { viewModel.toggleSave(it) },
+                onNavigateToPresetDetail = onNavigateToPresetDetail,
             )
         }
     }
@@ -108,6 +110,7 @@ private fun HomeSuccessScreen(
     onRefresh: () -> Unit,
     onToggleLike: (String) -> Unit,
     onSave: (String) -> Unit,
+    onNavigateToPresetDetail: (String) -> Unit,
 ) {
     val pullState = rememberPullToRefreshState()
     PullToRefreshBox(
@@ -124,6 +127,7 @@ private fun HomeSuccessScreen(
             onLoadMore = onLoadMore,
             onToggleLike = onToggleLike,
             onSave = onSave,
+            onNavigateToPresetDetail = onNavigateToPresetDetail,
         )
     }
 }
@@ -137,6 +141,7 @@ private fun HomeScreenContent(
     onLoadMore: () -> Unit,
     onToggleLike: (String) -> Unit,
     onSave: (String) -> Unit,
+    onNavigateToPresetDetail: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val gridState = rememberLazyGridState()
@@ -219,6 +224,7 @@ private fun HomeScreenContent(
                     currentUid = currentUid,
                     onToggleLike = { onToggleLike(preset.id) },
                     onSave = { onSave(preset.id) },
+                    onOpenDetail = { onNavigateToPresetDetail(preset.id) },
                     modifier = Modifier.padding(
                         vertical = 16.dp,
                         horizontal = 8.dp
@@ -256,5 +262,6 @@ private fun HomeScreenPreview() {
         onRefresh = {},
         onToggleLike = {},
         onSave = {},
+        onNavigateToPresetDetail = {},
     )
 }

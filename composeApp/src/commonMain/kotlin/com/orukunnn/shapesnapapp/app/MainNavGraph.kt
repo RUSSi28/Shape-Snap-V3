@@ -142,6 +142,9 @@ private fun MainShell(
             tabNavController = tabNavController,
             rootNavController = rootNavController,
             onLogoutClick = onLogoutClick,
+            onNavigateToPresetDetail = { presetId ->
+                rootNavController.navigate(PresetDetailDestination(presetId))
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),

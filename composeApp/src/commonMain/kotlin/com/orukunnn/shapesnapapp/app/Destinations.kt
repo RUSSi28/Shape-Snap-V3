@@ -9,6 +9,11 @@ data object LoginDestination
 data object MainDestination
 
 @Serializable
+data class PresetDetailDestination(
+    val presetId: String,
+)
+
+@Serializable
 data object TermsOfServiceDestination
 
 @Serializable

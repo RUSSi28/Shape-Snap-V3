@@ -10,6 +10,8 @@ interface PresetRepository {
 
     fun observePresets(): Flow<List<Preset>>
 
+    suspend fun fetchPresetById(presetId: String): Result<Preset?>
+
     suspend fun loadPresetsPage(cursor: PresetPageCursor? = null): Pair<List<Preset>, PresetPageCursor?>
 
     companion object {

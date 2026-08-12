@@ -101,6 +101,18 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
                 emit(emptyList())
             }
 
+    override suspend fun fetchPresetById(presetId: String): Result<Preset?> =
+        suspendRunCatching {
+            withFirestoreRetry {
+                val snapshot = firestore.collection(COL_PRESETS).document(presetId).get()
+                if (!snapshot.exists) {
+                    null
+                } else {
+                    snapshot.data(PresetEntity.serializer()).toPreset(snapshot.id)
+                }
+            }
+        }
+
     override suspend fun fetchPresetsPage(
         pageSize: Int,
         cursor: PresetPageCursor?,

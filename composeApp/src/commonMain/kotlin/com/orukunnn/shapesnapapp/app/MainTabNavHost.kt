@@ -18,6 +18,7 @@ fun MainTabNavHost(
     tabNavController: NavHostController,
     rootNavController: NavHostController,
     onLogoutClick: () -> Unit,
+    onNavigateToPresetDetail: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -31,7 +32,10 @@ fun MainTabNavHost(
     ) {
         composable<HomeDestination> {
             AppExitBackHandler()
-            HomeScreen(currentUser = userProfile)
+            HomeScreen(
+                currentUser = userProfile,
+                onNavigateToPresetDetail = onNavigateToPresetDetail,
+            )
         }
         composable<PostsDestination> {
             AppBackHandler(onBack = { tabNavController.navigate(HomeDestination) })

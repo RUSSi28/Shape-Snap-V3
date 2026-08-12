@@ -29,6 +29,15 @@ class PresetRepositoryImpl(
 
     override fun observePresets(): Flow<List<Preset>> = presets.filterNotNull()
 
+    override suspend fun fetchPresetById(presetId: String): Result<Preset?> {
+        val cachedPreset = presets.value?.firstOrNull { it.id == presetId }
+        return if (cachedPreset != null) {
+            Result.success(cachedPreset)
+        } else {
+            firestoreDatasource.fetchPresetById(presetId)
+        }
+    }
+
     override suspend fun loadPresetsPage(cursor: PresetPageCursor?): Pair<List<Preset>, PresetPageCursor?> {
         return firestoreDatasource.fetchPresetsPage(PresetRepository.PAGE_SIZE, cursor).fold(
             onSuccess = { it },

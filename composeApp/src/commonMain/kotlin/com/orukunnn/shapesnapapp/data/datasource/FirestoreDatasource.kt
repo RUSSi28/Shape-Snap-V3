@@ -14,6 +14,8 @@ data class UserPostsPage(
 interface FirestoreDatasource {
     fun observePresets(): Flow<List<Preset>>
 
+    suspend fun fetchPresetById(presetId: String): Result<Preset?>
+
     suspend fun fetchPresetsPage(
         pageSize: Int,
         cursor: PresetPageCursor?,
