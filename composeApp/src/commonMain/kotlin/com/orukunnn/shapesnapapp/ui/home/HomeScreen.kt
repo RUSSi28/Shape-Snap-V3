@@ -35,6 +35,8 @@ import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
+import com.orukunnn.shapesnapapp.domain.PresetShareLink
+import com.orukunnn.shapesnapapp.platform.rememberShareText
 import com.orukunnn.shapesnapapp.ui.common.LimitReachedDialog
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Outline
@@ -61,6 +63,7 @@ fun HomeScreen(
     val isLoadingMore by viewModel.isLoadingMore.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val showLimit by viewModel.showLimitReachedDialog.collectAsStateWithLifecycle()
+    val shareText = rememberShareText()
 
     val uid = currentUser.uid
 
@@ -89,6 +92,11 @@ fun HomeScreen(
                 onToggleLike = { viewModel.toggleLike(it) },
                 onSave = { viewModel.toggleSave(it) },
                 onNavigateToPresetDetail = onNavigateToPresetDetail,
+                onSharePreset = { preset ->
+                    PresetShareLink.create(preset.id)?.let { link ->
+                        shareText("${preset.displayName}\n$link")
+                    }
+                },
             )
         }
     }
@@ -111,6 +119,7 @@ private fun HomeSuccessScreen(
     onToggleLike: (String) -> Unit,
     onSave: (String) -> Unit,
     onNavigateToPresetDetail: (String) -> Unit,
+    onSharePreset: (Preset) -> Unit,
 ) {
     val pullState = rememberPullToRefreshState()
     PullToRefreshBox(
@@ -128,6 +137,7 @@ private fun HomeSuccessScreen(
             onToggleLike = onToggleLike,
             onSave = onSave,
             onNavigateToPresetDetail = onNavigateToPresetDetail,
+            onSharePreset = onSharePreset,
         )
     }
 }
@@ -142,6 +152,7 @@ private fun HomeScreenContent(
     onToggleLike: (String) -> Unit,
     onSave: (String) -> Unit,
     onNavigateToPresetDetail: (String) -> Unit,
+    onSharePreset: (Preset) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val gridState = rememberLazyGridState()
@@ -225,6 +236,7 @@ private fun HomeScreenContent(
                     onToggleLike = { onToggleLike(preset.id) },
                     onSave = { onSave(preset.id) },
                     onOpenDetail = { onNavigateToPresetDetail(preset.id) },
+                    onPresetShare = { onSharePreset(preset) },
                     modifier = Modifier.padding(
                         vertical = 16.dp,
                         horizontal = 8.dp
@@ -263,5 +275,6 @@ private fun HomeScreenPreview() {
         onToggleLike = {},
         onSave = {},
         onNavigateToPresetDetail = {},
+        onSharePreset = {},
     )
 }

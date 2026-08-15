@@ -22,12 +22,12 @@ fun NavGraphBuilder.presetDetailNavGraph(
             "PresetDetailDestination はログイン済みでのみ表示されます"
         }
         PresetDetailShell(
-            onBack = { rootNavController.popBackStack() },
+            onBack = rootNavController::navigateToHome,
         ) {
             PresetDetailScreen(
                 presetId = destination.presetId,
                 currentUser = userProfile,
-                onBack = { rootNavController.popBackStack() },
+                onBack = rootNavController::navigateToHome,
             )
         }
     }

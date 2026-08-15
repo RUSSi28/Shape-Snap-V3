@@ -18,7 +18,19 @@
 
         <activity
             android:exported="true"
+            android:launchMode="singleTop"
             android:name=".MainActivity">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="shape-snap-app.web.app"
+                    android:pathPrefix="/preset/"
+                    android:scheme="https" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

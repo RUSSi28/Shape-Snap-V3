@@ -8,8 +8,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.orukunnn.shapesnapapp.domain.DeepLinkHandler
 import com.orukunnn.shapesnapapp.ui.common.LogOutConfirmDialog
 import com.orukunnn.shapesnapapp.ui.main.MainScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -24,11 +26,13 @@ fun RootNavHost(
 ) {
     val userProfile by mainViewModel.userProfile.collectAsState()
     val showLogout by mainViewModel.showLogoutConfirmDialog.collectAsState()
+    val pendingPresetId by DeepLinkHandler.pendingPresetId.collectAsState()
     val rootNavController = rememberNavController()
     val isLoggedIn = userProfile != null
 
-    LaunchedEffect(isLoggedIn) {
+    LaunchedEffect(isLoggedIn, pendingPresetId) {
         val current = rootNavController.currentBackStackEntry?.destination
+        val pendingId = pendingPresetId
         val onLogin = current?.hasRoute<LoginDestination>() == true
         val onMain = current.isOnRoute(MainDestination::class)
         val onPresetDetail = current.isOnRoute(PresetDetailDestination::class)
@@ -36,6 +40,13 @@ fun RootNavHost(
             current.isOnRoute(ContactDestination::class)
 
         when {
+            isLoggedIn && pendingId != null -> {
+                rootNavController.navigateToHome()
+                rootNavController.navigate(PresetDetailDestination(pendingId)) {
+                    launchSingleTop = true
+                }
+                DeepLinkHandler.consume(pendingId)
+            }
             isLoggedIn && !onMain && !onPresetDetail && !onSub -> {
                 rootNavController.navigate(MainDestination) {
                     popUpTo(LoginDestination) { inclusive = true }
@@ -75,5 +86,12 @@ fun RootNavHost(
             onLogOutConfirm = mainViewModel::confirmLogout,
             onDismiss = mainViewModel::dismissLogoutConfirmation,
         )
+    }
+}
+
+fun NavHostController.navigateToHome() {
+    navigate(MainDestination) {
+        popUpTo(graph.id) { inclusive = true }
+        launchSingleTop = true
     }
 }

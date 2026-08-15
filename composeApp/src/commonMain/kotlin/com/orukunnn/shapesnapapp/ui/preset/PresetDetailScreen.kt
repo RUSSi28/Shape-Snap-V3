@@ -24,10 +24,14 @@ import coil3.compose.AsyncImage
 import com.orukunnn.shapesnapapp.app.ShapeSnapButton
 import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
+import com.orukunnn.shapesnapapp.domain.PresetShareLink
+import com.orukunnn.shapesnapapp.platform.rememberShareText
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Filled
+import com.woowla.compose.icon.collections.tabler.tabler.Outline
 import com.woowla.compose.icon.collections.tabler.tabler.filled.FileDownload
 import com.woowla.compose.icon.collections.tabler.tabler.filled.Heart
+import com.woowla.compose.icon.collections.tabler.tabler.outline.Share
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -41,6 +45,7 @@ fun PresetDetailScreen(
     },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val shareText = rememberShareText()
 
     when (val currentState = state) {
         PresetDetailUiState.Loading -> {
@@ -103,6 +108,18 @@ fun PresetDetailScreen(
                     enabled = true,
                     color = if (saved) ShapeSnapColors.Brand else ShapeSnapColors.TextTertiary,
                     onClick = viewModel::toggleSave,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                ShapeSnapButton(
+                    imageVector = Tabler.Outline.Share,
+                    text = "共有",
+                    enabled = true,
+                    color = ShapeSnapColors.TextTertiary,
+                    onClick = {
+                        PresetShareLink.create(preset.id)?.let { link ->
+                            shareText("${preset.displayName}\n$link")
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
