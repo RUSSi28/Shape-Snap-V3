@@ -1,6 +1,5 @@
 package com.orukunnn.shapesnapapp.ui.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,7 +44,6 @@ internal fun PresetItem(
     currentUid: String?,
     onClickLike: () -> Unit,
     onClickSave: () -> Unit,
-    onOpenDetail: () -> Unit,
     onClickShare: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -55,7 +53,7 @@ internal fun PresetItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = modifier.clickable(onClick = onOpenDetail)
+        modifier = modifier
     ) {
         val url = preset.imageUrl ?: preset.previewImageUrl
         if (!url.isNullOrBlank()) {
@@ -149,7 +147,6 @@ private fun PresetItemPreview() {
         currentUid = "",
         onClickLike = {},
         onClickSave = {},
-        onOpenDetail = {},
         onClickShare = {},
     )
 }

@@ -1,5 +1,6 @@
 package com.orukunnn.shapesnapapp.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -235,12 +236,15 @@ private fun HomeScreenContent(
                     currentUid = currentUid,
                     onClickLike = { onToggleLike(preset.id) },
                     onClickSave = { onSave(preset.id) },
-                    onOpenDetail = { onNavigateToPresetDetail(preset.id) },
                     onClickShare = { onSharePreset(preset) },
-                    modifier = Modifier.padding(
-                        vertical = 16.dp,
-                        horizontal = 8.dp
-                    )
+                    modifier = Modifier
+                        .clickable {
+                            onNavigateToPresetDetail(preset.id)
+                        }
+                        .padding(
+                            vertical = 16.dp,
+                            horizontal = 8.dp
+                        )
                 )
                 HorizontalDivider(modifier = Modifier.fillMaxWidth())
             }
