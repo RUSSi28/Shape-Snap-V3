@@ -43,10 +43,10 @@ import shapesnapv3.composeapp.generated.resources.preset_share
 internal fun PresetItem(
     preset: Preset,
     currentUid: String?,
-    onToggleLike: () -> Unit,
-    onSave: () -> Unit,
+    onClickLike: () -> Unit,
+    onClickSave: () -> Unit,
     onOpenDetail: () -> Unit,
-    onPresetShare: () -> Unit,
+    onClickShare: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val liked = currentUid != null && currentUid in preset.likedUserIds
@@ -107,7 +107,7 @@ internal fun PresetItem(
                 } else {
                     ShapeSnapColors.TextTertiary
                 },
-                onClick = onToggleLike,
+                onClick = onClickLike,
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -124,7 +124,7 @@ internal fun PresetItem(
                 } else {
                     ShapeSnapColors.TextTertiary
                 },
-                onClick = onSave,
+                onClick = onClickSave,
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -133,7 +133,7 @@ internal fun PresetItem(
                 text = stringResource(Res.string.preset_share),
                 enabled = true,
                 color = ShapeSnapColors.TextTertiary,
-                onClick = onPresetShare,
+                onClick = onClickShare,
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -147,9 +147,9 @@ private fun PresetItemPreview() {
     PresetItem(
         preset = PresetsFactory.createPreset(),
         currentUid = "",
-        onToggleLike = {},
-        onSave = {},
+        onClickLike = {},
+        onClickSave = {},
         onOpenDetail = {},
-        onPresetShare = {},
+        onClickShare = {},
     )
 }

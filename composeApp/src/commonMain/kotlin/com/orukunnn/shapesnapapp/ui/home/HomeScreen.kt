@@ -233,10 +233,10 @@ private fun HomeScreenContent(
                 PresetItem(
                     preset = preset,
                     currentUid = currentUid,
-                    onToggleLike = { onToggleLike(preset.id) },
-                    onSave = { onSave(preset.id) },
+                    onClickLike = { onToggleLike(preset.id) },
+                    onClickSave = { onSave(preset.id) },
                     onOpenDetail = { onNavigateToPresetDetail(preset.id) },
-                    onPresetShare = { onSharePreset(preset) },
+                    onClickShare = { onSharePreset(preset) },
                     modifier = Modifier.padding(
                         vertical = 16.dp,
                         horizontal = 8.dp
