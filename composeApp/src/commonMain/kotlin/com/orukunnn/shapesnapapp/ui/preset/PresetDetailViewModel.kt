@@ -7,8 +7,12 @@ import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetRepository
 import com.orukunnn.shapesnapapp.data.repository.user.UserRepository
 import com.orukunnn.shapesnapapp.domain.EventLogger
+import com.orukunnn.shapesnapapp.ui.common.StorageLimits
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 sealed interface PresetDetailUiState {
@@ -32,29 +36,26 @@ class PresetDetailViewModel(
     private val userRepository: UserRepository,
     private val eventLogger: EventLogger,
 ) : ViewModel() {
-    val state: StateFlow<PresetDetailUiState>
-        field = MutableStateFlow<PresetDetailUiState>(PresetDetailUiState.Loading)
-
-    init {
-        loadPreset()
-    }
-
-    fun loadPreset() {
-        viewModelScope.launch {
-            state.value = PresetDetailUiState.Loading
-            presetRepository.fetchPresetById(presetId).fold(
-                onSuccess = { preset ->
-                    state.value = preset?.let(PresetDetailUiState::Success)
-                        ?: PresetDetailUiState.NotFound
-                },
-                onFailure = {
-                    state.value = PresetDetailUiState.Error(
-                        message = "プリセットを読み込めませんでした。もう一度お試しください。",
-                    )
-                },
+    val state: StateFlow<PresetDetailUiState> =
+        presetRepository.presets
+            .map { presets -> presets.toDetailUiState(presetId) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = presetRepository.presets.value.toDetailUiState(presetId),
             )
-        }
-    }
+
+    val showLimitReachedDialog: StateFlow<Boolean>
+        field = MutableStateFlow(false)
+
+    private val storageIds: StateFlow<List<String>> =
+        userRepository.observeUser(userProfile.uid)
+            .map { it?.storage ?: userProfile.storage }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = userProfile.storage,
+            )
 
     fun toggleLike() {
         val preset = (state.value as? PresetDetailUiState.Success)?.preset ?: return
@@ -79,16 +80,36 @@ class PresetDetailViewModel(
     fun toggleSave() {
         val preset = (state.value as? PresetDetailUiState.Success)?.preset ?: return
         viewModelScope.launch {
-            if (preset.id in userProfile.storage) {
+            val isAlreadySaved = userProfile.uid in preset.savedUserIds
+            if (isAlreadySaved) {
                 userRepository.unsavePresetForUser(userProfile.uid, preset.id)
-            } else {
-                userRepository.savePresetForUser(userProfile.uid, preset.id).onSuccess {
-                    eventLogger.logPresetSave(
-                        userId = userProfile.uid,
-                        presetId = preset.id,
-                    )
-                }
+                return@launch
+            }
+            if (storageIds.value.size >= StorageLimits.FREE_LIMIT) {
+                showLimitReachedDialog.value = true
+                return@launch
+            }
+            userRepository.savePresetForUser(userProfile.uid, preset.id).onSuccess {
+                eventLogger.logPresetSave(
+                    userId = userProfile.uid,
+                    presetId = preset.id,
+                )
             }
         }
+    }
+
+    fun dismissLimitDialog() {
+        showLimitReachedDialog.value = false
+    }
+
+    companion object {
+        private fun List<Preset>?.toDetailUiState(presetId: String): PresetDetailUiState =
+            when (this) {
+                null -> PresetDetailUiState.Loading
+                else ->
+                    firstOrNull { it.id == presetId }
+                        ?.let(PresetDetailUiState::Success)
+                        ?: PresetDetailUiState.NotFound
+            }
     }
 }

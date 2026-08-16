@@ -10,6 +10,7 @@ import com.orukunnn.shapesnapapp.data.repository.trend.TrendsRepository
 import com.orukunnn.shapesnapapp.data.repository.user.UserRepository
 import com.orukunnn.shapesnapapp.domain.EventLogger
 import com.orukunnn.shapesnapapp.ui.common.LoadState
+import com.orukunnn.shapesnapapp.ui.common.StorageLimits
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -69,6 +71,15 @@ class HomeScreenViewModel(
     val signInState: StateFlow<LoadState<Unit>>
         field = MutableStateFlow<LoadState<Unit>>(LoadState.Idle)
 
+    private val storageIds: StateFlow<List<String>> =
+        userRepository.observeUser(userProfile.uid)
+            .map { it?.storage ?: userProfile.storage }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = userProfile.storage,
+            )
+
     fun loadMore() {
         // スナップショットで一覧をまとめて受け取るため追加ページはなし
     }
@@ -108,11 +119,17 @@ class HomeScreenViewModel(
 
     fun toggleSave(presetId: String) {
         viewModelScope.launch {
-            if (presetId in userProfile.storage) {
+            val isAlreadySaved =
+                presetRepository.presets.value
+                    ?.firstOrNull { it.id == presetId }
+                    ?.savedUserIds
+                    ?.contains(userProfile.uid)
+                    ?: (presetId in storageIds.value)
+            if (isAlreadySaved) {
                 userRepository.unsavePresetForUser(userProfile.uid, presetId)
                 return@launch
             }
-            if (userProfile.storage.size >= FREE_LIMIT) {
+            if (storageIds.value.size >= StorageLimits.FREE_LIMIT) {
                 showLimitReachedDialog.value = true
                 return@launch
             }
@@ -136,7 +153,7 @@ class HomeScreenViewModel(
     }
 
     companion object {
-        const val FREE_LIMIT: Int = 5
+        const val FREE_LIMIT: Int = StorageLimits.FREE_LIMIT
 
         private fun List<Preset>?.toHomeUiState(
             trendPresets: List<TrendPreset>,

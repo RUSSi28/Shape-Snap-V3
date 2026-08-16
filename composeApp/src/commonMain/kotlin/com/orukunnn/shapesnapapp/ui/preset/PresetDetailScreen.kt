@@ -26,6 +26,7 @@ import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.domain.PresetShareLink
 import com.orukunnn.shapesnapapp.platform.rememberShareText
+import com.orukunnn.shapesnapapp.ui.common.LimitReachedDialog
 import com.woowla.compose.icon.collections.tabler.Tabler
 import com.woowla.compose.icon.collections.tabler.tabler.Filled
 import com.woowla.compose.icon.collections.tabler.tabler.Outline
@@ -45,6 +46,7 @@ fun PresetDetailScreen(
     },
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showLimit by viewModel.showLimitReachedDialog.collectAsStateWithLifecycle()
     val shareText = rememberShareText()
 
     when (val currentState = state) {
@@ -61,7 +63,6 @@ fun PresetDetailScreen(
             MessageContent(
                 message = currentState.message,
                 onBack = onBack,
-                onRetry = viewModel::loadPreset,
             )
         }
         is PresetDetailUiState.Success -> {
@@ -124,6 +125,10 @@ fun PresetDetailScreen(
                 )
             }
         }
+    }
+
+    if (showLimit) {
+        LimitReachedDialog(onDismiss = viewModel::dismissLimitDialog)
     }
 }
 
