@@ -67,6 +67,11 @@
     <string name="storage_saved_title">Storage</string>
     <string name="storage_remove">削除</string>
     <string name="storage_empty">保存したプリセットはありません</string>
+    <string name="dialog_remove_storage_title">保存を削除しますか？</string>
+    <string name="dialog_remove_storage_message">このプリセットは保存一覧から削除されます。</string>
+    <string name="dialog_remove_storage_confirm">削除</string>
+    <string name="dialog_remove_storage_cancel">キャンセル</string>
+    <string name="dialog_remove_storage_error">保存を削除できませんでした。もう一度お試しください。</string>
     <string name="login_contact">お問い合わせはこちら</string>
     <string name="appbar_app_name">Shape Snap</string>
     <string name="appbar_storage_label">保存枠</string>
@@ -80,5 +85,6 @@
     <string name="settings_logout">ログアウト</string>
     <string name="settings_terms_of_service">利用規約</string>
     <string name="settings_contact">お問い合わせ</string>
-    <string name="storage_how_to_apply">アバターへの適用方法</string>
+    <string name="storage_how_to_apply_title">アバターへの適用方法</string>
+    <string name="storage_how_to_apply">1. (Android)\nヒエラルキーにあるアバターのシェイプキーをアプリ側で保存する\n\n2. (Unity)\nWindow タブから ShapeSnap のウィンドウを開く\n\n3. (Unity)\n事前に保存したシェイプキーのプリセットの「適用」ボタンを押して、Unity のアバターに反映する</string>
 </resources>
