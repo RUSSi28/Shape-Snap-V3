@@ -38,13 +38,11 @@ class PresetRepositoryImpl(
         }
     }
 
-    override suspend fun loadPresetsPage(cursor: PresetPageCursor?): Pair<List<Preset>, PresetPageCursor?> {
-        return firestoreDatasource.fetchPresetsPage(PresetRepository.PAGE_SIZE, cursor).fold(
-            onSuccess = { it },
-            onFailure = { e ->
+    override suspend fun loadPresetsPage(
+        cursor: PresetPageCursor?,
+    ): Result<Pair<List<Preset>, PresetPageCursor?>> =
+        firestoreDatasource.fetchPresetsPage(PresetRepository.PAGE_SIZE, cursor)
+            .onFailure { e ->
                 AppLogger.w("プリセット一覧の取得に失敗", e)
-                Pair(emptyList(), null)
-            },
-        )
-    }
+            }
 }

@@ -12,9 +12,9 @@ interface PresetRepository {
 
     suspend fun fetchPresetById(presetId: String): Result<Preset?>
 
-    suspend fun loadPresetsPage(cursor: PresetPageCursor? = null): Pair<List<Preset>, PresetPageCursor?>
+    suspend fun loadPresetsPage(cursor: PresetPageCursor? = null): Result<Pair<List<Preset>, PresetPageCursor?>>
 
     companion object {
-        const val PAGE_SIZE: Int = 4
+        const val PAGE_SIZE: Int = 10
     }
 }

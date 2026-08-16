@@ -1,6 +1,7 @@
 package com.orukunnn.shapesnapapp.ui.home
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -51,7 +53,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import shapesnapv3.composeapp.generated.resources.Res
+import shapesnapv3.composeapp.generated.resources.home_all_presets_shown
 import shapesnapv3.composeapp.generated.resources.home_empty
+import shapesnapv3.composeapp.generated.resources.home_load_error
+import shapesnapv3.composeapp.generated.resources.home_load_more_error
+import shapesnapv3.composeapp.generated.resources.home_load_more_retry
 import shapesnapv3.composeapp.generated.resources.home_section_presets
 import shapesnapv3.composeapp.generated.resources.home_section_trends
 
@@ -64,6 +70,7 @@ fun HomeScreen(
 ) {
     val homeState by viewModel.homeState.collectAsStateWithLifecycle()
     val isLoadingMore by viewModel.isLoadingMore.collectAsStateWithLifecycle()
+    val loadMoreFailed by viewModel.loadMoreFailed.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val showLimit by viewModel.showLimitReachedDialog.collectAsStateWithLifecycle()
     val shareText = rememberShareText()
@@ -78,8 +85,19 @@ fun HomeScreen(
         }
 
         is HomeUiState.Error -> {
-            Column(Modifier.fillMaxSize().padding(16.dp)) {
-                Text(state.message, color = MaterialTheme.colorScheme.error)
+            Column(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = stringResource(Res.string.home_load_error),
+                    color = MaterialTheme.colorScheme.error,
+                )
+                Spacer(Modifier.size(16.dp))
+                OutlinedButton(onClick = { viewModel.refreshPresets() }) {
+                    Text(stringResource(Res.string.home_load_more_retry))
+                }
             }
         }
 
@@ -89,6 +107,7 @@ fun HomeScreen(
                 trendPresets = state.trendPresets,
                 hasMore = state.hasMore,
                 isLoadingMore = isLoadingMore,
+                loadMoreFailed = loadMoreFailed,
                 isRefreshing = isRefreshing,
                 currentUid = uid,
                 onLoadMore = { viewModel.loadMore() },
@@ -121,6 +140,7 @@ private fun HomeSuccessScreen(
     trendPresets: ImmutableList<TrendPreset>,
     hasMore: Boolean,
     isLoadingMore: Boolean,
+    loadMoreFailed: Boolean,
     isRefreshing: Boolean,
     currentUid: String?,
     onLoadMore: () -> Unit,
@@ -143,6 +163,7 @@ private fun HomeSuccessScreen(
             trendPresets = trendPresets,
             hasMore = hasMore,
             isLoadingMore = isLoadingMore,
+            loadMoreFailed = loadMoreFailed,
             currentUid = currentUid,
             onLoadMore = onLoadMore,
             onToggleLike = onToggleLike,
@@ -160,6 +181,7 @@ private fun HomeScreenContent(
     trendPresets: ImmutableList<TrendPreset>,
     hasMore: Boolean,
     isLoadingMore: Boolean,
+    loadMoreFailed: Boolean,
     currentUid: String?,
     onLoadMore: () -> Unit,
     onToggleLike: (String) -> Unit,
@@ -170,13 +192,20 @@ private fun HomeScreenContent(
     modifier: Modifier = Modifier,
 ) {
     val gridState = rememberLazyGridState()
-    LaunchedEffect(gridState, hasMore) {
+    LaunchedEffect(gridState, hasMore, isLoadingMore, loadMoreFailed) {
         snapshotFlow {
             gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
         }.distinctUntilChanged()
             .collect { lastVisible ->
                 val total = gridState.layoutInfo.totalItemsCount
-                if (lastVisible != null && total > 0 && hasMore && lastVisible >= total - 3) {
+                if (
+                    lastVisible != null &&
+                    total > 0 &&
+                    hasMore &&
+                    !isLoadingMore &&
+                    !loadMoreFailed &&
+                    lastVisible >= total - 3
+                ) {
                     onLoadMore()
                 }
             }
@@ -266,17 +295,57 @@ private fun HomeScreenContent(
                 )
                 HorizontalDivider(modifier = Modifier.fillMaxWidth())
             }
-            if (isLoadingMore) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
-                    }
+            if (isLoadingMore || loadMoreFailed || !hasMore) {
+                item(
+                    key = "PresetsPagingFooter",
+                    span = { GridItemSpan(maxLineSpan) },
+                ) {
+                    PresetsPagingFooter(
+                        isLoadingMore = isLoadingMore,
+                        loadMoreFailed = loadMoreFailed,
+                        hasMore = hasMore,
+                        onRetry = onLoadMore,
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PresetsPagingFooter(
+    isLoadingMore: Boolean,
+    loadMoreFailed: Boolean,
+    hasMore: Boolean,
+    onRetry: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        when {
+            isLoadingMore -> {
+                CircularProgressIndicator()
+            }
+
+            loadMoreFailed -> {
+                Text(
+                    text = stringResource(Res.string.home_load_more_error),
+                    color = MaterialTheme.colorScheme.error,
+                )
+                OutlinedButton(onClick = onRetry) {
+                    Text(stringResource(Res.string.home_load_more_retry))
+                }
+            }
+
+            !hasMore -> {
+                Text(
+                    text = stringResource(Res.string.home_all_presets_shown),
+                    color = ShapeSnapColors.TextTertiary,
+                )
             }
         }
     }
@@ -293,6 +362,7 @@ private fun HomeScreenPreview() {
         }.toPersistentList(),
         hasMore = true,
         isLoadingMore = false,
+        loadMoreFailed = false,
         isRefreshing = false,
         currentUid = null,
         onLoadMore = {},

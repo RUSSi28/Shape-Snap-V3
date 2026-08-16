@@ -7,6 +7,10 @@
     <string name="nav_sign_out">ログアウト</string>
     <string name="home_title">Home</string>
     <string name="home_empty">プリセットがまだありません</string>
+    <string name="home_all_presets_shown">全てのプリセットを表示しました</string>
+    <string name="home_load_error">プリセットを取得できませんでした</string>
+    <string name="home_load_more_error">読み込みに失敗しました</string>
+    <string name="home_load_more_retry">再読み込み</string>
     <string name="posts_title">Your Posts</string>
     <string name="posts_load_more">さらに読み込む</string>
     <string name="posts_empty">投稿がありません</string>
