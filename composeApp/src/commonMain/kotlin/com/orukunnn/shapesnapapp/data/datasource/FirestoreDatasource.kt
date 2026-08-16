@@ -1,6 +1,7 @@
 package com.orukunnn.shapesnapapp.data.datasource
 
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
+import com.orukunnn.shapesnapapp.data.model.trend.TrendItem
 import com.orukunnn.shapesnapapp.data.model.user.UserPost
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetPageCursor
@@ -13,6 +14,8 @@ data class UserPostsPage(
 
 interface FirestoreDatasource {
     fun observePresets(): Flow<List<Preset>>
+
+    fun observeWeeklyTrendItems(): Flow<List<TrendItem>>
 
     suspend fun fetchPresetById(presetId: String): Result<Preset?>
 

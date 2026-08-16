@@ -4,6 +4,8 @@ import com.orukunnn.shapesnapapp.core.util.AppLogger
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetEntity
 import com.orukunnn.shapesnapapp.data.model.preset.toPreset
+import com.orukunnn.shapesnapapp.data.model.trend.TrendItem
+import com.orukunnn.shapesnapapp.data.model.trend.TrendRanking
 import com.orukunnn.shapesnapapp.data.model.user.UserEntity
 import com.orukunnn.shapesnapapp.data.model.user.UserPost
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
@@ -98,6 +100,39 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
                 }
             }.catch { e ->
                 AppLogger.e("presets の購読に失敗", e)
+                emit(emptyList())
+            }
+
+    /**
+     * shape-snap-functions は `trends/weekly` ドキュメントへ
+     * `{ period, items: [{ presetId, score, rank, ... }] }` を書き込む。
+     */
+    override fun observeWeeklyTrendItems(): Flow<List<TrendItem>> =
+        firestore
+            .collection(COL_TRENDS)
+            .document(DOC_WEEKLY)
+            .snapshots
+            .retryWhen { cause, attempt ->
+                if (cause.isFirestoreUnavailable() && attempt < 5L) {
+                    delay(400L * (attempt + 1))
+                    true
+                } else {
+                    false
+                }
+            }
+            .map { snapshot ->
+                if (!snapshot.exists) {
+                    emptyList()
+                } else {
+                    runCatching {
+                        snapshot.data(TrendRanking.serializer()).items
+                    }.getOrElse {
+                        AppLogger.w("trends/weekly のデシリアライズに失敗", it)
+                        emptyList()
+                    }
+                }
+            }.catch { e ->
+                AppLogger.e("trends/weekly の購読に失敗", e)
                 emit(emptyList())
             }
 
@@ -343,6 +378,8 @@ class FirestoreDatasourceImpl : FirestoreDatasource {
         private const val COL_PRESETS = "presets"
         private const val COL_USERS = "users"
         private const val COL_POSTS = "posts"
+        private const val COL_TRENDS = "trends"
+        private const val DOC_WEEKLY = "weekly"
         private const val FIELD_LIKED_USER_IDS = "likedUserIds"
         private const val FIELD_CREATED_AT = "createdAt"
     }

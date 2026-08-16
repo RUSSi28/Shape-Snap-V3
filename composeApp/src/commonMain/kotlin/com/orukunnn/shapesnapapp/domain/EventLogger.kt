@@ -36,6 +36,13 @@ class EventLogger(
         log(userId, presetId, EventType.PRESET_SAVE)
     }
 
+    fun logTrendItemClick(
+        userId: String,
+        presetId: String,
+    ) {
+        log(userId, presetId, EventType.TREND_ITEM_CLICK)
+    }
+
     private fun log(
         userId: String,
         presetId: String,

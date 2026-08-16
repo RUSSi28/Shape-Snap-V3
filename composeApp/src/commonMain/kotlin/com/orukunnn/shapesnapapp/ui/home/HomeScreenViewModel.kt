@@ -3,19 +3,20 @@ package com.orukunnn.shapesnapapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
+import com.orukunnn.shapesnapapp.data.model.trend.TrendPreset
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetRepository
+import com.orukunnn.shapesnapapp.data.repository.trend.TrendsRepository
 import com.orukunnn.shapesnapapp.data.repository.user.UserRepository
 import com.orukunnn.shapesnapapp.domain.EventLogger
 import com.orukunnn.shapesnapapp.ui.common.LoadState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -24,6 +25,7 @@ sealed interface HomeUiState {
 
     data class Success(
         val presets: ImmutableList<Preset>,
+        val trendPresets: ImmutableList<TrendPreset>,
         val hasMore: Boolean,
     ) : HomeUiState
 
@@ -32,21 +34,27 @@ sealed interface HomeUiState {
     ) : HomeUiState
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenViewModel(
     private val userProfile: UserProfile,
     private val presetRepository: PresetRepository,
+    private val trendsRepository: TrendsRepository,
     private val userRepository: UserRepository,
     private val eventLogger: EventLogger,
 ) : ViewModel() {
     val homeState: StateFlow<HomeUiState> =
-        presetRepository.presets
-            .map { presets -> presets.toHomeUiState() }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = presetRepository.presets.value.toHomeUiState(),
-            )
+        combine(
+            presetRepository.presets,
+            trendsRepository.weeklyTrendPresets,
+        ) { presets, trendPresets ->
+            presets.toHomeUiState(trendPresets.orEmpty())
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue =
+                presetRepository.presets.value.toHomeUiState(
+                    trendsRepository.weeklyTrendPresets.value.orEmpty(),
+                ),
+        )
 
 
     val isLoadingMore: StateFlow<Boolean>
@@ -119,6 +127,10 @@ class HomeScreenViewModel(
         }
     }
 
+    fun logTrendItemClick(presetId: String) {
+        eventLogger.logTrendItemClick(userProfile.uid, presetId)
+    }
+
     fun dismissLimitDialog() {
         showLimitReachedDialog.value = false
     }
@@ -126,13 +138,16 @@ class HomeScreenViewModel(
     companion object {
         const val FREE_LIMIT: Int = 5
 
-        private fun List<Preset>?.toHomeUiState(): HomeUiState =
+        private fun List<Preset>?.toHomeUiState(
+            trendPresets: List<TrendPreset>,
+        ): HomeUiState =
             when (this) {
                 null ->
                     HomeUiState.Loading
                 else ->
                     HomeUiState.Success(
                         presets = sortedByDescending { it.createdAt }.toPersistentList(),
+                        trendPresets = trendPresets.toPersistentList(),
                         hasMore = false,
                     )
             }

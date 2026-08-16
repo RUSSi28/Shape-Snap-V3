@@ -13,6 +13,8 @@ import com.orukunnn.shapesnapapp.data.repository.auth.AuthRepository
 import com.orukunnn.shapesnapapp.data.repository.auth.AuthRepositoryImpl
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetRepository
 import com.orukunnn.shapesnapapp.data.repository.preset.PresetRepositoryImpl
+import com.orukunnn.shapesnapapp.data.repository.trend.TrendsRepository
+import com.orukunnn.shapesnapapp.data.repository.trend.TrendsRepositoryImpl
 import com.orukunnn.shapesnapapp.data.repository.user.UserPostsRepository
 import com.orukunnn.shapesnapapp.data.repository.user.UserPostsRepositoryImpl
 import com.orukunnn.shapesnapapp.data.repository.user.UserRepository
@@ -42,6 +44,7 @@ fun appModule() =
         single<FirestoreDatasource> { FirestoreDatasourceImpl() }
         single<AuthRepository> { AuthRepositoryImpl(get()) }
         single<PresetRepository> { PresetRepositoryImpl(get(), get()) }
+        single<TrendsRepository> { TrendsRepositoryImpl(get(), get(), get()) }
         single<UserPostsRepository> { UserPostsRepositoryImpl(get()) }
         single<UserRepository> { UserRepositoryImpl(get()) }
         single { EventLogger(get(), get()) }
@@ -49,6 +52,7 @@ fun appModule() =
             HomeScreenViewModel(
                 userProfile = userProfile,
                 presetRepository = get(),
+                trendsRepository = get(),
                 userRepository = get(),
                 eventLogger = get(),
             )

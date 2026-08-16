@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.orukunnn.shapesnapapp.app.ShapeSnapColors
 import com.orukunnn.shapesnapapp.data.model.preset.Preset
 import com.orukunnn.shapesnapapp.data.model.preset.PresetsFactory
+import com.orukunnn.shapesnapapp.data.model.trend.TrendPreset
 import com.orukunnn.shapesnapapp.data.model.user.UserProfile
 import com.orukunnn.shapesnapapp.domain.PresetShareLink
 import com.orukunnn.shapesnapapp.platform.rememberShareText
@@ -44,6 +45,7 @@ import com.woowla.compose.icon.collections.tabler.tabler.Outline
 import com.woowla.compose.icon.collections.tabler.tabler.outline.Crown
 import com.woowla.compose.icon.collections.tabler.tabler.outline.Timeline
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -84,6 +86,7 @@ fun HomeScreen(
         is HomeUiState.Success -> {
             HomeSuccessScreen(
                 presets = state.presets,
+                trendPresets = state.trendPresets,
                 hasMore = state.hasMore,
                 isLoadingMore = isLoadingMore,
                 isRefreshing = isRefreshing,
@@ -98,6 +101,10 @@ fun HomeScreen(
                         shareText("${preset.displayName}\n$link")
                     }
                 },
+                onTrendItemClick = { presetId ->
+                    viewModel.logTrendItemClick(presetId)
+                    onNavigateToPresetDetail(presetId)
+                },
             )
         }
     }
@@ -111,6 +118,7 @@ fun HomeScreen(
 @Composable
 private fun HomeSuccessScreen(
     presets: ImmutableList<Preset>,
+    trendPresets: ImmutableList<TrendPreset>,
     hasMore: Boolean,
     isLoadingMore: Boolean,
     isRefreshing: Boolean,
@@ -121,6 +129,7 @@ private fun HomeSuccessScreen(
     onSave: (String) -> Unit,
     onNavigateToPresetDetail: (String) -> Unit,
     onSharePreset: (Preset) -> Unit,
+    onTrendItemClick: (String) -> Unit,
 ) {
     val pullState = rememberPullToRefreshState()
     PullToRefreshBox(
@@ -131,6 +140,7 @@ private fun HomeSuccessScreen(
     ) {
         HomeScreenContent(
             presets = presets,
+            trendPresets = trendPresets,
             hasMore = hasMore,
             isLoadingMore = isLoadingMore,
             currentUid = currentUid,
@@ -139,6 +149,7 @@ private fun HomeSuccessScreen(
             onSave = onSave,
             onNavigateToPresetDetail = onNavigateToPresetDetail,
             onSharePreset = onSharePreset,
+            onTrendItemClick = onTrendItemClick,
         )
     }
 }
@@ -146,6 +157,7 @@ private fun HomeSuccessScreen(
 @Composable
 private fun HomeScreenContent(
     presets: ImmutableList<Preset>,
+    trendPresets: ImmutableList<TrendPreset>,
     hasMore: Boolean,
     isLoadingMore: Boolean,
     currentUid: String?,
@@ -154,6 +166,7 @@ private fun HomeScreenContent(
     onSave: (String) -> Unit,
     onNavigateToPresetDetail: (String) -> Unit,
     onSharePreset: (Preset) -> Unit,
+    onTrendItemClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val gridState = rememberLazyGridState()
@@ -169,7 +182,7 @@ private fun HomeScreenContent(
             }
     }
 
-    if (presets.isEmpty()) {
+    if (presets.isEmpty() && trendPresets.isEmpty()) {
         Text(
             stringResource(Res.string.home_empty),
             modifier = Modifier.padding(16.dp),
@@ -180,54 +193,59 @@ private fun HomeScreenContent(
             state = gridState,
             modifier = modifier.fillMaxSize()
         ) {
-            item(
-                key = "TrendsHeading",
-                span = { GridItemSpan(maxLineSpan) },
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+            if (trendPresets.isNotEmpty()) {
+                item(
+                    key = "TrendsHeading",
+                    span = { GridItemSpan(maxLineSpan) },
                 ) {
-                    Icon(
-                        imageVector = Tabler.Outline.Crown,
-                        contentDescription = null,
-                        tint = ShapeSnapColors.TextSecondary,
-                    )
-                    Spacer(Modifier.size(4.dp))
-                    Text(
-                        text = stringResource(Res.string.home_section_trends),
-                        fontSize = 18.sp,
-                        color = ShapeSnapColors.TextSecondary,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Tabler.Outline.Crown,
+                            contentDescription = null,
+                            tint = ShapeSnapColors.TextSecondary,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        Text(
+                            text = stringResource(Res.string.home_section_trends),
+                            fontSize = 18.sp,
+                            color = ShapeSnapColors.TextSecondary,
+                        )
+                    }
+                }
+                item(
+                    key = "TrendItem",
+                    span = { GridItemSpan(maxLineSpan) },
+                ) {
+                    TrendsLazyRow(
+                        trendPresets = trendPresets,
+                        onItemClick = onTrendItemClick,
                     )
                 }
             }
-            item(
-                key = "TrendItem",
-                span = { GridItemSpan(maxLineSpan) },
-            ) {
-                TrendsLazyRow(
-                    presets = presets,
-                )
-            }
-            item(
-                key = "PresetsHeading",
-                span = { GridItemSpan(maxLineSpan) },
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+            if (presets.isNotEmpty()) {
+                item(
+                    key = "PresetsHeading",
+                    span = { GridItemSpan(maxLineSpan) },
                 ) {
-                    Icon(
-                        imageVector = Tabler.Outline.Timeline,
-                        contentDescription = null,
-                        tint = ShapeSnapColors.TextSecondary,
-                    )
-                    Spacer(Modifier.size(4.dp))
-                    Text(
-                        text = stringResource(Res.string.home_section_presets),
-                        fontSize = 18.sp,
-                        color = ShapeSnapColors.TextSecondary,
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Tabler.Outline.Timeline,
+                            contentDescription = null,
+                            tint = ShapeSnapColors.TextSecondary,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        Text(
+                            text = stringResource(Res.string.home_section_presets),
+                            fontSize = 18.sp,
+                            color = ShapeSnapColors.TextSecondary,
+                        )
+                    }
                 }
             }
             items(presets, key = { it.id }) { preset ->
@@ -270,6 +288,9 @@ private fun HomeScreenContent(
 private fun HomeScreenPreview() {
     HomeSuccessScreen(
         presets = PresetsFactory.createPresets(),
+        trendPresets = PresetsFactory.createPresets().mapIndexed { index, preset ->
+            TrendPreset(preset = preset, rank = index + 1, score = (10 - index).toDouble())
+        }.toPersistentList(),
         hasMore = true,
         isLoadingMore = false,
         isRefreshing = false,
@@ -280,5 +301,6 @@ private fun HomeScreenPreview() {
         onSave = {},
         onNavigateToPresetDetail = {},
         onSharePreset = {},
+        onTrendItemClick = {},
     )
 }
