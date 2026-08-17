@@ -355,7 +355,7 @@
 ## 13. 開発・実行時の前提設定
 
 - Android:
-  - `GOOGLE_WEB_CLIENT_ID` を `gradle.properties` 等で設定
+  - `GOOGLE_WEB_CLIENT_ID` を `local.secrets.properties`（gitignore 済み）で設定
   - Firebase設定 (`composeApp/google-services.json`) 配置
 - iOS:
   - `iosApp/GoogleService-Info.plist` 配置

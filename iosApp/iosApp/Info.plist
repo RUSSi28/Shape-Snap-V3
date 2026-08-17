@@ -8,7 +8,7 @@
 	<true/>
 	<!-- GoogleSignIn OAuth リダイレクト用 URL Scheme。
 	     REVERSED_CLIENT_ID は Firebase Console からダウンロードした
-	     GoogleService-Info.plist に含まれる値を設定する。 -->
+	     GoogleService-Info.plist の値に置き換えること。 -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

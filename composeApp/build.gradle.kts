@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -85,6 +86,19 @@ kotlin {
     }
 }
 
+val localSecrets =
+    Properties().apply {
+        val secretsFile = rootProject.file("local.secrets.properties")
+        if (secretsFile.exists()) {
+            secretsFile.inputStream().use(::load)
+        }
+    }
+
+fun secretOrProperty(name: String): String =
+    localSecrets.getProperty(name)
+        ?: (project.findProperty(name) as String?)
+        ?: ""
+
 android {
     namespace = "com.orukunnn.shapesnapapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -98,7 +112,7 @@ android {
         buildConfigField(
             "String",
             "GOOGLE_WEB_CLIENT_ID",
-            "\"${project.findProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\"",
+            "\"${secretOrProperty("GOOGLE_WEB_CLIENT_ID")}\"",
         )
     }
     packaging {
