@@ -1,37 +1,25 @@
 # Shape-Snap-V3
+CMP, KMPを使用したAndroid, iOS両対応のVRChatの改変支援アプリケーションです。
 
-This is a Kotlin Multiplatform project targeting Android, iOS.
+※このアプリはUnityエディタ拡張「ShapeSnap」と使用する想定で作られています。
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+| ホーム画面 | 投稿画面 | 保存画面 | 設定画面 |
+| --- | --- | --- | --- |
+| <img width="1084" height="2412" alt="image" src="https://github.com/user-attachments/assets/300064e1-c1a4-4fa2-ab79-a9a2bae1b6a0" /> | <img width="1084" height="2412" alt="image" src="https://github.com/user-attachments/assets/ec197cc4-7c7c-47cb-b9b8-738c6e84571c" /> | <img width="1084" height="2412" alt="image" src="https://github.com/user-attachments/assets/c53d5909-3fc1-43da-999e-cb8e9dcb0ed3" /> | <img width="1084" height="2412" alt="image" src="https://github.com/user-attachments/assets/07f7ef83-198b-4f6f-bed0-4e1429824143" /> |
+| 他の人が投稿している作品を閲覧・保存・共有 | 自身が投稿したプリセットをアバター名ごとに閲覧・投稿取り消し | 他の人の投稿しているプリセットのうち保存しているものを閲覧、保存の削除 | ログイン情報・ログアウト・アプリ規約・お問い合わせ先への遷移等 |
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 前提情報
+VRChatは3Dモデリング技術を使用して作られた操作可能なアバターを利用してオンラインでコミュニケーションを行います。
+アバターはBlendShapeという技術を利用して、シェイプキーという0から100までの値を調整して3Dモデルの形を簡単に変形することができます。
 
-### Build and Run Android Application
+## アプリの目的
+メッシュに対して用意されているシェイプキーの値とUnity上のシーンを画像化したもの等の情報をプリセットと定義します。
+- **プリセットを簡単に他人に共有できる** (現在Androidのみ)
+- 一度作ったプリセットを保存して次の改変時に役立てる
+- 他の人が作ったプリセットを気軽にアバターに適用できる
+- いいねや保存などのリアクションから集計した人気の造形がわかる
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+## 備考
+本アプリはサーバー運用のために広告機能を搭載する前提で作成しています。それ以外の用途で広告収入を利用しません。
 
-### Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
-
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+アプリのプレビューの画像に載っているアバターは ＠ぽんでろ 様の[オリジナル3Dアバター「しなの」](https://booth.pm/ja/items/6106863)です。
