@@ -1,7 +1,7 @@
 # Shape-Snap-V3
 CMP, KMPを使用したAndroid, iOS両対応のVRChatの改変支援アプリケーションです。
 
-※このアプリはUnityエディタ拡張「ShapeSnap」と使用する想定で作られています。
+※このアプリはUnityエディタ拡張「[ShapeSnap](https://github.com/RUSSi28/ShapeSnapV2)」と使用する想定で作られています。
 
 | ホーム画面 | 投稿画面 | 保存画面 | 設定画面 |
 | --- | --- | --- | --- |
